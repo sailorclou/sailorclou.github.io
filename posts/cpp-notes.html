@@ -1,0 +1,888 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>C++</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "SF Arabic", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="2ea8601f-6296-80a9-811f-f4dc2b791412" class="page sans"><header><h1 class="page-title" dir="auto">C++</h1><p class="page-description" dir="auto"></p><table class="properties"><tbody><tr class="property-row property-row-select"><th><span class="icon property-icon"><img src="https://www.notion.so/icons/arrow-circle-down_gray.svg" style="width:14px;height:14px;display:block"/></span>Select</th><td><span class="selected-value select-value-color-default">知识体系</span></td></tr></tbody></table></header><div class="page-body"><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8096-a229-e73c8d0b15a7" class=""><a href="https://www.notion.so/CSView-C-2ea8601f629680ff9de6fe95f82edfc8?pvs=21">CSView/C++</a> </p></div><div style="display:contents" dir="auto"><h1 id="2ea8601f-6296-80db-be14-d487ae58a819" class="">1 现代C++新特性 - C++ 11/14/17/20</h1></div><div style="display:contents" dir="ltr"><figure id="2ea8601f-6296-80c5-a4b9-f1b1f6a423fe"><a href="https://learn.microsoft.com/zh-cn/cpp/cpp/welcome-back-to-cpp-modern-cpp?view=msvc-170" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">欢迎回到 C++ - 现代 C++</div><div class="bookmark-description">介绍现代 C++ 中的编程惯例及其基本原理。</div></div><div class="bookmark-href"><img src="https://learn.microsoft.com/favicon.ico" class="icon bookmark-icon"/>https://learn.microsoft.com/zh-cn/cpp/cpp/welcome-back-to-cpp-modern-cpp?view=msvc-170</div></div><img src="https://learn.microsoft.com/en-us/media/open-graph-image.png" class="bookmark-image"/></a></figure></div><div style="display:contents" dir="ltr"><figure id="2ea8601f-6296-8048-8302-ffaf2e3cba4f"><a href="https://changkun.de/modern-cpp/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">现代 C++ 教程: 高速上手 C++ 11/14/17/20 - Modern C++ Tutorial: C++ 11/14/17/20 On the Fly</div><div class="bookmark-description">Modern C++ Tutorial | C++ 11/14/17/20 On the Fly | 现代 C++ 教程 | 高速上手 C++11/14/17/20</div></div><div class="bookmark-href"><img src="https://changkun.de/modern-cpp/assets/cover-2nd.png" class="icon bookmark-icon"/>https://changkun.de/modern-cpp/</div></div></a></figure></div><div style="display:contents" dir="auto"><div style="display:contents" dir="ltr"><figure id="2ea8601f-6296-80cd-9099-da7721ec3942" class="link-to-page"><a href="https://www.notion.so/Modern-C-Tutorial-2ea8601f629680cd9099da7721ec3942?pvs=21">Modern C++ Tutorial</a></figure></div></div><div style="display:contents" dir="auto"><h2 id="2ea8601f-6296-800f-aa87-d5e3a5c11f25" class="">1.1 准备知识</h2></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-806e-a8e6-dc9012ed8cf8" class="">1.1.1 被弃用的特性</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8037-85df-e55bbc8fc8cf" class="">从C++1开始，被弃用/更改的主要特性：</p></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-8018-aece-c060d433f953" class="bulleted-list"><li style="list-style-type:disc">不允许将字符串常量赋值给一个 <code>char *</code> ，初始化一个 <code>char *</code>  应该用 <code>const char *</code> 或者 <code>auto</code> 。<div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80e1-b632-d56ae2a3015a" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">char *str = &quot;hello world!&quot;; // 将出现弃用警告</code></pre></div></li></ul></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-80d1-bacb-c0c4ad09c6fd" class="bulleted-list"><li style="list-style-type:disc">异常处理应使用 <code>noexcept</code> 。</li></ul></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-807c-a393-cfd18fe005ba" class="bulleted-list"><li style="list-style-type:disc">C 语言风格的类型转换（即在变量前加 <code>(convert_type)</code> ）被弃用，应使用 <code>static_cast</code>、<code>reinterpret_cast</code>、<code>const_cast</code> 。</li></ul></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-8000-bbb0-cd0ce95a4ad4" class="bulleted-list"><li style="list-style-type:disc">……</li></ul></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-803d-83f3-f725d8279a06" class="">
+</p></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-8079-a198-cfa89fc64b2f" class="">1.1.2 与C的兼容性</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80a8-a884-ff2033e7e754" class="">在编写 C++ 是应尽可能避免诸如 <code>void*</code> 的程序风格。不得不使用 C 时，用 <code>extern “C”</code> ，并将 C 语言与 C++ 代码分离编译，再统一链接：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80bc-abc8-ce9145f33d5d" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">// foo.h
+#ifdef __cplusplus
+extern &quot;C&quot; {
+#endif
+
+int add(int x, int y);
+
+#ifdef __cplusplus
+}
+#endif
+
+// foo.c
+int add(int x, int y) {
+    return x+y;
+}
+
+// 1.1.cpp
+#include &quot;foo.h&quot;
+#include &lt;iostream&gt;
+#include &lt;functional&gt;
+
+int main() {
+    [out = std::ref(std::cout &lt;&lt; &quot;Result from C code: &quot; &lt;&lt; add(1, 2))](){
+        out.get() &lt;&lt; &quot;.\n&quot;;
+    }();
+    return 0;
+}</code></pre></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-802c-9ae5-de1814feff14" class="code code-wrap"><code class="language-Shell" style="white-space:pre-wrap;word-break:break-all">gcc -c foo.c # 使用 gcc 编译 C 语言代码
+clang++ 1.1.cpp foo.o -std=c++2a -o 1.1 # 使用 clang++ 将 C++代码和 .o 文件链接起来</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8097-a8f4-cdfe5d7a0bd1" class="">也可以使用 <code>Makefile</code> 编译上面的代码：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8063-8b8e-d8d4edec1f78" class="code code-wrap"><code class="language-Makefile" style="white-space:pre-wrap;word-break:break-all">C = gcc
+CXX = clang++
+
+SOURCE_C = foo.c
+OBJECTS_C = foo.o
+
+SOURCE_CXX = 1.1.cpp
+
+TARGET = 1.1
+LDFLAGS_COMMON = -std=c++2a
+
+all:
+	$(C) -c $(SOURCE_C)
+	$(CXX) $(SOURCE_CXX) $(OBJECTS_C) $(LDFLAGS_COMMON) -o $(TARGET)
+clean:
+	rm -rf *.o $(TARGET)</code></pre></div><div style="display:contents" dir="auto"><blockquote id="2ea8601f-6296-80fb-8c02-ee3d16d0326c" class="block-color-red">注：Makefile 中的缩进是制表符而不是空格符</blockquote></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80d7-b48d-fec15851b438" class="">
+</p></div><div style="display:contents" dir="auto"><h2 id="2ea8601f-6296-80f0-9653-fdc1211d2ebb" class="">1.2 语言可用性的强化</h2></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-802f-a47c-fe33f7bb9deb" class="">语言可用性，为编写代码或编译器编译代码时的行为，发生在运行之前。</p></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-806c-b495-f98c1cf4193f" class="">1.2.1 常量</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8023-9f96-e4fb96e9362c" class=""><code><strong>nullptr</strong></code><strong> </strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8096-b321-fb207df0089e" class="">空指针常量，替代 <code>NULL</code> 。</p></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-80f3-ac23-ccef6916a96e" class="bulleted-list"><li style="list-style-type:disc">C++ 不允许直接将 <code>void *</code> 隐式转换到其他类型 → <div style="display:contents" dir="auto"><ul id="2ea8601f-6296-8015-84f8-e5dffd0643f3" class="bulleted-list"><li style="list-style-type:circle">若把 <code>NULL</code> 定义为 <code>((void*)0)</code>， <code>char *ch = NULL;</code> 会编译错；</li></ul></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-80b4-b1ed-f33490b97bfd" class="bulleted-list"><li style="list-style-type:circle">若定义为 <code>0</code> ，将导致 C++ 中重载特性发生混乱，<code>foo(NULL);</code> 会调用 <code>foo(int);</code> 。</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="2ea8601f-6296-806a-b43c-dcbbdf45e3da" class="bulleted-list"><li style="list-style-type:disc">C++11 引入 <code>nullptr</code> 区分 空指针和 <code>0</code> ，类型为 <code>nullptr_t</code> ，能够隐式转换为任何指针或成员指针的类型， 也能和它们进行比较。</li></ul></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-807d-8ff5-e7515a0084b3" class=""><code><strong>constexpr</strong></code><strong> </strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-808a-bbb6-ef266be6bfd2" class="">将常量表达式，如 <code>1+2</code>，<code>3*4</code> ，在编译时优化并植入到程序运行时，以增加程序的性能。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80c5-b300-e4cd03efa510" class=""><code>constexpr</code> 让用户显示声明函数或对象构造函数在编译期会成为常量表达式。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80c9-b4f4-cfc89e0a9a42" class="">数组定义阶段的例子：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8003-b99e-c483505ae31c" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+#define LEN 10
+
+int len_foo(){
+    int i = 2;
+    return i;
+}
+constexpr int len_foo_constexpr(){
+    return 5;
+}
+
+constexpr int fibonacci(const int n){
+    return n == 1 || n == 2 ? 1 : fibonacci(n-1)+fibonacci(n-2);
+}
+
+int main(){
+    char arr_1[10];                      // 合法
+    char arr_2[LEN];                     // 合法
+
+    int len = 10;
+    // char arr_3[len];                  // 非法
+
+    const int len_2 = len + 1;           // const 常数而不是常量表达式
+    constexpr int len_2_constexpr = 1 + 2 + 3;
+    // char arr_4[len_2];                // 非法
+    char arr_4[len_2_constexpr];         // 合法
+
+    // char arr_5[len_foo()+5];          // 非法
+    char arr_6[len_foo_constexpr() + 1]; // 合法
+
+    std::cout &lt;&lt; fibonacci(10) &lt;&lt; std::endl;
+    // 1, 1, 2, 3, 5, 8, 13, 21, 34, 55
+    std::cout &lt;&lt; fibonacci(10) &lt;&lt; std::endl;
+    return 0;
+}</code></pre></div><div style="display:contents" dir="auto"><blockquote id="2ea8601f-6296-80e0-98f9-f7430f98778c" class=""><mark class="highlight-red">注：现在大部分编译器其实都带有自身编译优化，很多非法行为在编译器优化的加持下会变得合法</mark></blockquote></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80b9-a6c6-d59ff161abba" class=""><code>constexpr</code> 修饰的函数可以使用递归，从 C++14 开始，<code>constexpr</code> 函数可以在内部使用局部变量、循环和分支等简单语句。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-801c-84cd-f144415c16b5" class="">
+</p></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-8006-a1eb-dc463775ad4c" class="">1.2.2 变量及其初始化</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8046-b88c-e15723ea9af3" class=""><code><strong>if/switch</strong></code><strong> 变量声明强化</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8033-b265-ee316f7e07ba" class="">C++17 开始，允许在 <code>if</code> 或 <code>switch</code> 中定义变量。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80d2-85ee-ff13fac5e922" class=""><strong>初始化列表</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80fc-8ed3-e98dc341d36d" class="">C++11 使用 <code>std::initializer_list</code> 类型，允许构造函数或其他函数像参数一样，和普通数组统一使用 <code>{}</code> 初始化列表。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-807a-9051-f413d5da0ec3" class=""><strong>结构化绑定</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80f3-aca0-f1df175a6191" class="">C++17 使用 <code>auto</code>，打破 <code>std::tie</code> 对元组 <code>tuple</code> 对象数量、类型的要求。</p></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-8036-bbe3-cc56bb396ade" class="">1.2.3 类型推导</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8069-aa01-cd299d454af3" class=""><code><strong>auto</strong></code></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-802e-84c4-f86ef144b6fa" class="">C++14 起，能用于 lambda 表达式中的函数传参，C++20 起推广到一般的函数：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8074-8e72-fd9b6869a496" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">auto add14 = [](auto x, auto y) -&gt; int {
+    return x+y;
+}
+
+int add20(auto x, auto y){
+    return x+y;
+}</code></pre></div><div style="display:contents" dir="auto"><blockquote id="2ea8601f-6296-8002-b639-f796990525a6" class="block-color-red">注：还不能用于推导数组类型，如 <code>auto auto_arr2[10] = {arr};</code></blockquote></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-805e-b50c-cc4a536476ff" class=""><code><strong>decltype</strong></code></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8097-a8d2-eb46f018f88a" class="">为解决 <code>auto</code> 关键字只能对变量进行类型推导的缺陷，用法与 <code>typeof </code>类似：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-802a-83e3-de687cdaa577" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">decltype(表达式)</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80de-b490-d7219a44e5df" class="">计算某个表达式的类型：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8005-9cb4-e004861ca411" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">decltype(x+y) z;</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8010-99c6-c67777782a45" class="">判断变量是否是统一类型：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80fc-9b3a-c4ec2b53aecc" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">if (std::is_same&lt;decltype(x), int&gt;::value)
+    std::cout &lt;&lt; &quot;type x == int&quot; &lt;&lt; std::endl;</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8063-8631-c29a737c014f" class=""><strong>尾返回类型推导</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80a9-b3e4-ce5a96018415" class="">为推导返回值类型，C++11 引入尾返回值类型：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8023-9c22-e845aee7aa8a" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">template&lt;typename T, typename U&gt;
+auto add2(T x, U y) -&gt; decltype(x+y){
+    return x + y;
+}</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8074-9520-c36fdcb1f495" class="">C++14 开始可以自动推导返回值：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80f8-ae9e-faad1547048d" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">template&lt;typename T, typename U&gt;
+auto add3(T x, U y){
+    return x + y;
+}</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80e6-8836-f685cb2e433f" class=""><code><strong>decletype(auto)</strong></code></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80ea-ac05-cf4d50cdbcfc" class="">
+</p></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-8057-9a5b-d4fabf7a2674" class="">1.2.4 控制流</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80de-9a49-cc9bed37d312" class=""><code><strong>if constexpr</strong></code></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-809b-81c0-ebac1e49008c" class="">在代码编译阶段完成分支判断，提高程序效率：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-800f-8496-dc358596e328" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">#include &lt;iostream&gt;
+
+template&lt;typename T&gt;
+auto print_type_info(const T&amp; t){
+    if constexpr (std::is_integral&lt;T&gt;::value){
+        return t + 1;
+    } else {
+        return t + 0.001;
+    }
+}
+int main(){
+    std::cout &lt;&lt; print_type_info(5) &lt;&lt; std::endl;
+    std::cout &lt;&lt; print_type_info(3.14) &lt;&lt; std::endl;
+}</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8074-8223-d447a2b26e48" class="">在编译时，实际的代码表现为：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-802f-93be-d70262436426" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">int print_type_info(const int&amp; t){
+    return t + 1;
+}
+double print_type_info(const double&amp; t){
+    return t + 0.001;
+}
+int main(){
+    std::cout &lt;&lt; print_type_info(5) &lt;&lt; std::endl;
+    std::cout &lt;&lt; print_type_info(3.14) &lt;&lt; std::endl;
+}</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80c5-bc5a-fbd3d2d45c1c" class=""><strong>区间 for 迭代</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-800a-ad4d-f67e0b064a07" class="">C++11 引入基于范围的迭代，能够像 Python 一样简洁：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8074-9893-e86b13617182" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">for (auto element : vec)
+        std::cout &lt;&lt; element &lt;&lt; std::endl;</code></pre></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-80b4-a01b-c1691a05bd2f" class="">1.2.5 模版</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80d5-a488-fac6a7fdc058" class="">将一切能够在编译期处理的问题放到编译期处理，而在运行时仅处理最核心的动态服务，大幅优化运行性能。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80bd-93f4-ca1d6a22da7f" class="">
+</p></div><div style="display:contents" dir="auto"><h3 id="2ea8601f-6296-80b1-885c-f2a77b52e214" class="">1.2.6 面向对象</h3></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8066-af72-e06a39582922" class=""><strong>委托构造</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80b5-ace6-c4333d1fcd55" class="">同一个类中一个构造函数调用另一个构造函数，从而简化代码：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80a1-b983-c763bfa26b9f" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">class Base {
+public:
+    int value1;
+    int value2;
+    Base() {
+        value1 = 1;
+    }
+    Base(int value) : Base() { // 委托 Base() 构造函数
+        value2 = value;
+    }
+};</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80c0-9020-e702b3b36efc" class=""><strong>继承构造</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-806d-8041-d98901cd4689" class="">传统 C++ 中，继承的构造函数需要一一传递参数，导致效率低下。C++11 利用关键字 <strong>using</strong> 引入继承构造函数的概念：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-803d-b943-c7d5ba4f0757" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">class Base {
+public:
+    int value1;
+    int value2;
+    Base() {
+        value1 = 1;
+    }
+    Base(int value) : Base() { // 委托 Base() 构造函数
+        value2 = value;
+    }
+};
+class Subclass : public Base {
+public:
+    using Base::Base; // 继承构造
+};</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-808f-8ead-d40f71d55eb6" class=""><strong>显式虚函数重载</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8058-9130-cc874e484ac6" class="">传统 C++ 中，容易发生意外重载虚函数：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80ac-9b51-c51c52de268c" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">struct Base {
+    virtual void foo();
+};
+struct SubClass: Base {
+    void foo();          // 恰好与虚函数重名
+};</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8005-b47c-c059f2a7439b" class="">当基类的虚函数被删除后，子类拥有旧的函数就不再重载该虚函数并变成了一个普通的类方法。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-803d-a152-d432131b222a" class="">C++11 引入 <code>override</code> 和 <code>final</code> 两个关键字防止上述情形的发生。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8050-a0ec-dc60c7d5c9a7" class=""><code>override</code> 显式告知编译器进行重载，编译器检查基函数是否存在函数签名（函数名、参数类型、返回值类型、对象中可见性等）一致的虚函数，否则无法通过编译：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8081-bb27-c7fadf342c83" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">struct Base {
+    virtual void foo(int);
+};
+struct SubClass: Base {
+    virtual void foo(int) override; // 合法
+    virtual void foo(float) override; // 非法, 父类没有此虚函数
+};</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8013-b0f4-d30755b199d7" class=""><code>final</code> 防止类被继续继承以及终止虚函数重载：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-8047-977a-ed60f2fb68af" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">struct Base {
+    virtual void foo() final;
+};
+struct SubClass1 final: Base {
+}; // 合法
+
+struct SubClass2 : SubClass1 {
+}; // 非法, SubClass1 已 final
+
+struct SubClass3: Base {
+    void foo(); // 非法, foo 已 final
+};</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-802f-be7f-cd9a5081103d" class=""><strong>显式/禁止使用默认构造</strong></p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-80b8-9c39-cd88cc5194b8" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">class Magic {
+    public:
+    Magic() = default; // 显式声明使用编译器生成的构造
+    Magic&amp; operator=(const Magic&amp;) = delete; // 显式声明拒绝编译器生成构造
+    Magic(int magic_number);
+}</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-809d-ba90-dcab6e116541" class=""><strong>强类型枚举</strong></p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80a2-ae8c-c6c1ba9b3960" class="">在传统 C++ 中，枚举类型并不安全，可能会被视作整数，导致两种完全不同的枚举类型可以直接比较，甚至同一个命名空间中的不同枚举类型的枚举值名字不能重名。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8049-8e2e-e8a2d6d4b9e1" class="">C++11 引入了枚举类（enumeration class）进行声明：</p></div><div style="display:contents" dir="auto"><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2ea8601f-6296-806d-bb4f-e8281643d0be" class="code code-wrap"><code class="language-C++" style="white-space:pre-wrap;word-break:break-all">enum class new_enum : unsigned int {
+    value1,
+    value2,
+    value3 = 100,
+    value4 = 100
+};</code></pre></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-806e-b7b4-faa996fd9619" class="">实现了类型安全，不能被隐式地转换为整数，也不能与整数进行比较，不能对不同的枚举类型进行比较。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-803c-a59f-fb26a5c84e51" class="">需要获得枚举值的值时，需要显示的类型转换，也可以通过重载 <code>&lt;&lt;</code> 算符进行输出。</p></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-8040-abef-f1cfadf367a8" class="">
+</p></div><div style="display:contents" dir="auto"><h1 id="2ea8601f-6296-8006-a0fb-d6a0122ddbc5" class="">2 内存管理</h1></div><div style="display:contents" dir="auto"><p id="2ea8601f-6296-80a9-b9dc-df91d4658633" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
