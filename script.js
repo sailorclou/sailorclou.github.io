@@ -193,130 +193,130 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Add dark theme styles
-    function addDarkThemeStyles() {
-        const style = document.createElement('style');
-        style.textContent = `
-            .dark-theme {
-                background-color: #1a1a1a;
-                color: #ffffff;
-            }
-            .dark-theme .header {
-                background-color: #2d2d2d;
-                border-bottom-color: #404040;
-            }
-            .dark-theme .post-card {
-                background-color: #2d2d2d;
-                border-color: #404040;
-            }
-            .dark-theme .footer {
-                background-color: #1a1a1a;
-                border-top-color: #404040;
-            }
-            .dark-theme h1, .dark-theme h2, .dark-theme h3 {
-                color: #ffffff;
-            }
-            .dark-theme p, .dark-theme .post-excerpt {
-                color: #cccccc;
-            }
-            .dark-theme .nav-link, .dark-theme .brand-link {
-                color: #cccccc;
-            }
-            .dark-theme .nav-link:hover, .dark-theme .nav-link.active {
-                color: #0078d4;
-            }
-            .dark-theme .sidebar {
-                background-color: #2d2d2d;
-                border-color: #404040;
-            }
-            .dark-theme .sidebar-title {
-                color: #ffffff;
-                border-bottom-color: #0078d4;
-            }
-            .dark-theme .category-link {
-                color: #cccccc;
-            }
-            .dark-theme .category-link:hover {
-                background-color: #404040;
-                color: #0078d4;
-                border-color: #404040;
-            }
-            .dark-theme .category-link.active {
-                background-color: #0078d4;
-                color: #ffffff;
-                border-color: #0078d4;
-            }
-            .dark-theme .category-count {
-                background-color: #404040;
-                color: #cccccc;
-            }
-            .dark-theme .category-link.active .category-count {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: #ffffff;
-            }
-            .dark-theme .recent-post-link {
-                color: #ffffff;
-            }
-            .dark-theme .recent-post-link:hover {
-                color: #0078d4;
-            }
-            .dark-theme .recent-post-date {
-                color: #cccccc;
-            }
-            .dark-theme .recent-post {
-                border-bottom-color: #404040;
-            }
-            .dark-theme .sidebar-text {
-                color: #cccccc;
-            }
-            .dark-theme .sidebar-link {
-                color: #0078d4;
-            }
-            .dark-theme .sidebar-link:hover {
-                color: #106ebe;
-            }
-            .dark-theme .tag {
-                background-color: #404040;
-                color: #ffffff;
-                border-color: #404040;
-            }
-            .dark-theme .tag:hover {
-                background-color: #0078d4;
-                color: #ffffff;
-                border-color: #0078d4;
-            }
-            .dark-theme .tag.active {
-                background-color: #0078d4;
-                color: #ffffff;
-                border-color: #0078d4;
-            }
-            .dark-theme .skills-graph-container {
-                background-color: #2d2d2d;
-                border-color: #404040;
-            }
-            .dark-theme .skill-label {
-                fill: #ffffff;
-            }
-            .dark-theme .skill-node:hover .skill-label {
-                fill: #0078d4;
-            }
-            .dark-theme .skill-link {
-                stroke: #404040;
-            }
-            .dark-theme .skill-link:hover {
-                stroke: #0078d4;
-            }
-            .dark-theme .legend-label {
-                color: #cccccc;
-            }
-            .dark-theme .github-link {
-                color: #cccccc;
-            }
-            .dark-theme .github-link:hover {
-                color: #0078d4;
-            }
-        `;
-        document.head.appendChild(style);
-    }
+    // function addDarkThemeStyles() {
+    //     const style = document.createElement('style');
+    //     style.textContent = `
+    //         // .dark-theme {
+    //         //     background-color: #1a1a1a;
+    //         //     color: #ffffff;
+    //         // }
+    //         // .dark-theme .header {
+    //         //     background-color: #2d2d2d;
+    //         //     border-bottom-color: #404040;
+    //         // }
+    //         // .dark-theme .post-card {
+    //         //     background-color: #2d2d2d;
+    //         //     border-color: #404040;
+    //         // }
+    //         .dark-theme .footer {
+    //             background-color: #1a1a1a;
+    //             border-top-color: #404040;
+    //         }
+    //         .dark-theme h1, .dark-theme h2, .dark-theme h3 {
+    //             color: #ffffff;
+    //         }
+    //         .dark-theme p, .dark-theme .post-excerpt {
+    //             color: #cccccc;
+    //         }
+    //         // .dark-theme .nav-link, .dark-theme .brand-link {
+    //         //     color: #cccccc;
+    //         // }
+    //         // .dark-theme .nav-link:hover, .dark-theme .nav-link.active {
+    //         //     color: #0078d4;
+    //         // }
+    //         // .dark-theme .sidebar {
+    //         //     background-color: #2d2d2d;
+    //         //     border-color: #404040;
+    //         // }
+    //         // .dark-theme .sidebar-title {
+    //         //     color: #ffffff;
+    //         //     border-bottom-color: #0078d4;
+    //         // }
+    //         .dark-theme .category-link {
+    //             color: #cccccc;
+    //         }
+    //         .dark-theme .category-link:hover {
+    //             background-color: #404040;
+    //             color: #0078d4;
+    //             border-color: #404040;
+    //         }
+    //         .dark-theme .category-link.active {
+    //             background-color: #0078d4;
+    //             color: #ffffff;
+    //             border-color: #0078d4;
+    //         }
+    //         .dark-theme .category-count {
+    //             background-color: #404040;
+    //             color: #cccccc;
+    //         }
+    //         .dark-theme .category-link.active .category-count {
+    //             background-color: rgba(255, 255, 255, 0.2);
+    //             color: #ffffff;
+    //         }
+    //         .dark-theme .recent-post-link {
+    //             color: #ffffff;
+    //         }
+    //         .dark-theme .recent-post-link:hover {
+    //             color: #0078d4;
+    //         }
+    //         .dark-theme .recent-post-date {
+    //             color: #cccccc;
+    //         }
+    //         .dark-theme .recent-post {
+    //             border-bottom-color: #404040;
+    //         }
+    //         .dark-theme .sidebar-text {
+    //             color: #cccccc;
+    //         }
+    //         .dark-theme .sidebar-link {
+    //             color: #0078d4;
+    //         }
+    //         .dark-theme .sidebar-link:hover {
+    //             color: #106ebe;
+    //         }
+    //         .dark-theme .tag {
+    //             background-color: #404040;
+    //             color: #ffffff;
+    //             border-color: #404040;
+    //         }
+    //         .dark-theme .tag:hover {
+    //             background-color: #0078d4;
+    //             color: #ffffff;
+    //             border-color: #0078d4;
+    //         }
+    //         .dark-theme .tag.active {
+    //             background-color: #0078d4;
+    //             color: #ffffff;
+    //             border-color: #0078d4;
+    //         }
+    //         .dark-theme .skills-graph-container {
+    //             background-color: #2d2d2d;
+    //             border-color: #404040;
+    //         }
+    //         .dark-theme .skill-label {
+    //             fill: #ffffff;
+    //         }
+    //         .dark-theme .skill-node:hover .skill-label {
+    //             fill: #0078d4;
+    //         }
+    //         .dark-theme .skill-link {
+    //             stroke: #404040;
+    //         }
+    //         .dark-theme .skill-link:hover {
+    //             stroke: #0078d4;
+    //         }
+    //         .dark-theme .legend-label {
+    //             color: #cccccc;
+    //         }
+    //         .dark-theme .github-link {
+    //             color: #cccccc;
+    //         }
+    //         .dark-theme .github-link:hover {
+    //             color: #0078d4;
+    //         }
+    //     `;
+    //     document.head.appendChild(style);
+    // }
 
     // Calculate and update blog post counts
     function updateBlogCounts() {
@@ -925,13 +925,224 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // 自动生成并维护文章目录（TOC），支持定位与高亮
+    function generateTOC() {
+        const tocContainer = document.getElementById('toc');
+        const content = document.querySelector('.page-body');
+        if (!tocContainer || !content) return;
+
+        // headings to include
+        const selector = 'h1, h2, h3, h4';
+        const headings = Array.from(content.querySelectorAll(selector));
+        if (headings.length === 0) {
+            tocContainer.innerHTML = '<p style="color:#605e5c; font-size:0.9rem;">（无目录）</p>';
+            return;
+        }
+
+        // helper: slugify heading text
+        function slugify(text) {
+            return text.toString().toLowerCase().trim()
+                .replace(/&nbsp;/g, ' ')
+                .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, '-')
+                .replace(/^-+|-+$/g, '')
+                .replace(/--+/g, '-');
+        }
+
+        // ensure unique ids
+        const usedIds = new Set();
+        headings.forEach(h => {
+            if (!h.id) {
+                let base = slugify(h.textContent || h.innerText || 'heading');
+                let id = base || 'heading';
+                let i = 1;
+                while (usedIds.has(id) || document.getElementById(id)) {
+                    id = `${base}-${i++}`;
+                }
+                h.id = id;
+                usedIds.add(id);
+            } else {
+                usedIds.add(h.id);
+            }
+        });
+
+        // build nested list robustly (supports arbitrary starting level) and add collapse toggles
+        tocContainer.innerHTML = '';
+        const rootUl = document.createElement('ul');
+        rootUl.className = 'toc-list';
+
+        // determine minimum heading level to normalize nesting
+        const levels = headings.map(h => parseInt(h.tagName.substring(1)));
+        const minLevel = Math.min.apply(null, levels);
+
+        // stack to keep track of UL elements for each level
+        const stack = [rootUl];
+        let currentLevel = minLevel;
+
+        headings.forEach(h => {
+            const level = parseInt(h.tagName.substring(1));
+            const li = document.createElement('li');
+            li.className = `toc-item toc-level-${level}`;
+
+            const a = document.createElement('a');
+            a.href = `#${h.id}`;
+            a.className = 'toc-link';
+            a.textContent = h.textContent.trim();
+            a.setAttribute('data-target', h.id);
+            a.setAttribute('aria-label', `go to ${h.textContent.trim()}`);
+
+            // create header wrapper to hold toggle and link so nested UL sits after
+            const header = document.createElement('div');
+            header.className = 'toc-header';
+            header.appendChild(a);
+            li.appendChild(header);
+
+            if (level > currentLevel) {
+                // create nested UL(s) down to the new level
+                for (let L = currentLevel + 1; L <= level; L++) {
+                    const newUl = document.createElement('ul');
+                    newUl.className = 'toc-sublist';
+
+                    // attach to the last LI of the current top stack
+                    const parentLi = stack[stack.length - 1].lastElementChild;
+                    if (parentLi) {
+                        // ensure parent has header wrapper
+                        let parentHeader = parentLi.querySelector(':scope > .toc-header');
+                        if (!parentHeader) {
+                            const ph = document.createElement('div');
+                            ph.className = 'toc-header';
+                            // move existing firstElementChild (likely the anchor) into header
+                            while (parentLi.firstChild) {
+                                ph.appendChild(parentLi.firstChild);
+                            }
+                            parentLi.appendChild(ph);
+                            parentHeader = ph;
+                        }
+
+                        // mark parent as having children and add toggle if not present
+                        parentLi.classList.add('has-children');
+                        if (!parentHeader.querySelector(':scope > .toc-toggle')) {
+                            const toggle = document.createElement('button');
+                            toggle.type = 'button';
+                            toggle.className = 'toc-toggle';
+                            toggle.setAttribute('aria-expanded', 'true');
+                            toggle.innerHTML = '▾';
+                            toggle.title = 'Toggle sub-sections';
+                            toggle.addEventListener('click', (ev) => {
+                                ev.stopPropagation();
+                                const sub = parentLi.querySelector(':scope > ul.toc-sublist');
+                                if (!sub) return;
+                                const collapsed = sub.classList.toggle('collapsed');
+                                toggle.innerHTML = collapsed ? '▸' : '▾';
+                                toggle.setAttribute('aria-expanded', String(!collapsed));
+                            });
+                            // insert toggle as first child of header
+                            parentHeader.insertBefore(toggle, parentHeader.firstChild);
+                        }
+
+                        parentLi.appendChild(newUl);
+                        stack.push(newUl);
+                    } else {
+                        // fallback: append to current top
+                        stack[stack.length - 1].appendChild(newUl);
+                        stack.push(newUl);
+                    }
+                }
+                currentLevel = level;
+            } else if (level < currentLevel) {
+                // pop stack until reaching correct parent level
+                while (currentLevel > level && stack.length > 1) {
+                    stack.pop();
+                    currentLevel--;
+                }
+            }
+
+            // append the new item to the current top list
+            stack[stack.length - 1].appendChild(li);
+        });
+
+        tocContainer.appendChild(rootUl);
+
+        // Add extra small styles for collapse/toggle if not already present
+        if (!document.getElementById('toc-extra-styles')) {
+            const extra = document.createElement('style');
+            extra.id = 'toc-extra-styles';
+            extra.textContent = `
+                .toc-sublist { margin-left: 0.5rem; padding-left: 0.5rem; }
+                .toc-header { display: flex; align-items: center; gap: 0.35rem; }
+                .toc-toggle { background: none; border: none; padding: 0 0.35rem; margin-right: 0.25rem; cursor: pointer; color: #605e5c; font-size: 0.9rem; }
+                .toc-item.has-children > .toc-header { font-weight: 600; }
+                .toc-item.has-children > .toc-header > .toc-link { flex: 1 1 auto; }
+                .toc-sublist.collapsed { display: none; }
+                /* ensure toggle is visible in dark mode */
+                .dark-theme .toc-toggle { color: #cfcfcf; }
+            `;
+            document.head.appendChild(extra);
+        }
+
+        // Smooth scrolling handled by global handler; add click to update history (optional)
+        const tocLinks = tocContainer.querySelectorAll('a.toc-link');
+        tocLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                // Allow global anchor handler to perform smooth scroll; update active state here
+                setActiveTOC(link.getAttribute('data-target'));
+                // update url hash without jumping
+                history.replaceState(null, '', `#${link.getAttribute('data-target')}`);
+            });
+        });
+
+        // active state management
+        let activeId = null;
+        let ticking = false;
+        const onScroll = () => {
+            if (ticking) return;
+            ticking = true;
+            window.requestAnimationFrame(() => {
+                const offset = 160; // consider header height
+                let current = null;
+                headings.forEach(h => {
+                    const rect = h.getBoundingClientRect();
+                    if (rect.top <= offset) current = h;
+                });
+                if (!current) current = headings[0];
+                if (current && current.id !== activeId) {
+                    activeId = current.id;
+                    setActiveTOC(activeId);
+                }
+                ticking = false;
+            });
+        };
+
+        function setActiveTOC(id) {
+            const prev = tocContainer.querySelector('a.toc-link.active');
+            if (prev) prev.classList.remove('active');
+            const anchor = tocContainer.querySelector(`a.toc-link[data-target="${id}"]`);
+            if (anchor) anchor.classList.add('active');
+        }
+
+        // initial highlight based on current scroll
+        onScroll();
+        window.addEventListener('scroll', onScroll, { passive: true });
+
+        // observe mutations in the content and regenerate TOC if headings changed
+        if (window.__tocMutationObserver) {
+            window.__tocMutationObserver.disconnect();
+        }
+        window.__tocMutationObserver = new MutationObserver((mutationsList) => {
+            // if structure changes, rebuild TOC (debounced)
+            if (window.__tocRebuildTimer) clearTimeout(window.__tocRebuildTimer);
+            window.__tocRebuildTimer = setTimeout(() => generateTOC(), 150);
+        });
+        window.__tocMutationObserver.observe(content, { childList: true, subtree: true });
+    }
+
     // Initialize all features
+    generateTOC();
     estimateReadingTime();
     addCopyButtons();
     addScrollToTop();
     addKeyboardNavigation();
     addThemeToggle();
-    addDarkThemeStyles();
+    // addDarkThemeStyles();
     updateBlogCounts();
     addCategoryFiltering();
     addTagFiltering();

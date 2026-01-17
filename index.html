@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Personal Blog</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="./lib/d3.min.js"></script>
 </head>
 <body>
     <header class="header">
@@ -27,10 +24,10 @@
                         <a href="index.html" class="nav-link active">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a href="about.html" class="nav-link">About</a>
+                        <a href="./pages/about.html" class="nav-link">About</a>
                     </li>
                     <li class="nav-item">
-                        <a href="contact.html" class="nav-link">Contact</a>
+                        <a href="./pages/contact.html" class="nav-link">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -81,9 +78,15 @@
                             <ul class="recent-posts">
                                 <li class="recent-post">
                                     <a href="posts/getting-started-with-web-development.html" class="recent-post-link">
-                                        Getting Started with Web Development
+                                        Getting Started with Web Development (for testing)
                                     </a>
                                     <span class="recent-post-date">Dec 15, 2024</span>
+                                </li>
+                                <li class="recent-post">
+                                    <a href="posts/cpp-notes.html" class="recent-post-link">
+                                        Notes for modern C++
+                                    </a>
+                                    <span class="recent-post-date">Jan 17, 2026</span>
                                 </li>
                             </ul>
                         </div>
@@ -110,7 +113,7 @@
                             </div>
                             <h2 class="post-title">
                                 <a href="posts/getting-started-with-web-development.html" class="post-link">
-                                    Getting Started with Web Development
+                                    Getting Started with Web Development (for testing)
                                 </a>
                             </h2>
                             <p class="post-excerpt">
@@ -124,6 +127,29 @@
                             </div>
                             <div class="post-footer">
                                 <a href="posts/getting-started-with-web-development.html" class="read-more">Read more →</a>
+                            </div>
+                        </article>
+                        <article class="post-card" data-category="technology">
+                            <div class="post-meta">
+                                <time class="post-date">January 17, 2026</time>
+                                <span class="post-category">Technology</span>
+                            </div>
+                            <h2 class="post-title">
+                                <a href="posts/cpp-notes.html" class="post-link">
+                                    Notes for modern C++
+                                </a>
+                            </h2>
+                            <p class="post-excerpt">
+                                A collection of notes and resources for learning modern C++ programming.
+                            </p>
+                            <div class="post-tags">
+                                <span class="tag">C++</span>
+                                <span class="tag">Programming</span>
+                                <span class="tag">Notes</span>
+                                <span class="tag">Resources</span>
+                            </div>
+                            <div class="post-footer">
+                                <a href="posts/cpp-notes.html" class="read-more">Read more →</a>
                             </div>
                         </article>
 
