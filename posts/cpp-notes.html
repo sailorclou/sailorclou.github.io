@@ -76,77 +76,172 @@
                             <pre><code class="language-cpp">char *str = "hello world!"; // 将出现弃用警告</code></pre>
                             <ul>
                                 <li>异常处理应使用 <code>noexcept</code>。</li>
-                                <li>C 语言风格的类型转换被弃用，应使用 <code>static_cast</code>、<code>reinterpret_cast</code>、<code>const_cast</code>。</li>
+                                <li>C 语言风格的类型转换（即在变量前加 <code>(convert_type)</code> ）被弃用，应使用 <code>static_cast</code>、<code>reinterpret_cast</code>、<code>const_cast</code>。</li>
                             </ul>
 
                             <h4>1.1.2 与 C 的兼容性</h4>
-                            <p>编写 C++ 时应避免 <code>void*</code> 风格。必须使用 C 时，使用 <code>extern "C"</code> 分离编译：</p>
+                            <p>编写 C++ 时应避免 <code>void*</code>。必须使用 C 时，使用 <code>extern "C"</code>，  ，并将 C 语言与 C++ 代码分离编译，再统一链接：</p>
                             <pre><code class="language-cpp">
 // foo.h
 #ifdef __cplusplus
 extern "C" {
 #endif
+
 int add(int x, int y);
+
 #ifdef __cplusplus
 }
 #endif
 
-// 1.1.cpp 链接示例
+// foo.c
+int add(int x, int y) {
+    return x+y;
+}
+
+// 1.1.cpp
+#include "foo.h"
+#include <iostream>
+#include <functional>
+
 int main() {
     [out = std::ref(std::cout << "Result from C code: " << add(1, 2))](){
         out.get() << ".\n";
     }();
     return 0;
 }</code></pre>
+                            <pre><code class="language-bash">
+gcc -c foo.c # 使用 gcc 编译 C 语言代码
+clang++ 1.1.cpp foo.o -std=c++2a -o 1.1 # 使用 clang++ 将 C++代码和 .o 文件链接起来
+</code></pre>
+                            <p>也可以使用 <code>Makefile</code> 编译上面的代码：</p>
+                            <pre><code class="language-bash">
+C = gcc
+CXX = clang++
 
+SOURCE_C = foo.c
+OBJECTS_C = foo.o
+
+SOURCE_CXX = 1.1.cpp
+
+TARGET = 1.1
+LDFLAGS_COMMON = -std=c++2a
+
+all:
+	$(C) -c $(SOURCE_C)
+	$(CXX) $(SOURCE_CXX) $(OBJECTS_C) $(LDFLAGS_COMMON) -o $(TARGET)
+clean:
+	rm -rf *.o $(TARGET)</code></pre>
+                            <p><span class="text-highlight">注：Makefile 中的缩进是制表符而不是空格符</span></p>
                             <h3>1.2 语言可用性的强化</h3>
                             <p>语言可用性发生在运行之前，涉及编写代码或编译器编译时的行为。</p>
 
                             <h4>1.2.1 常量</h4>
-                            <p><strong>nullptr</strong>：取代 <code>NULL</code>。C++ 不允许 <code>void *</code> 隐式转换。<code>nullptr</code> 类型为 <code>nullptr_t</code>，可隐式转换为任何指针类型。</p>
-                            
-                            <p><strong>constexpr</strong>：将常量表达式在编译时优化，提升性能。支持递归（C++11）及局部变量、循环（C++14）。</p>
+                            <p><strong>nullptr</strong>：取代 <code>NULL</code>，区分空指针和 <code>0</code>。C++ 不允许 <code>void *</code> 隐式转换到其他类型。
+                                <ul>
+                                    <li>若把 <code>NULL</code> 定义为 <code>((void*)0)</code>， <code>char *ch = NULL;</code> 会编译错；
+                                    <li>若把 <code>NULL</code> 定义为 <code>0</code>， <code>func(NULL);</code> 会引起二义性（若有重载函数 <code>func(int)</code> 和 <code>func(char*)</code>）。</li>
+                                </ul>
+                                <code>nullptr</code> 类型为 <code>nullptr_t</code>，可隐式转换为任何指针或成员指针的类型，也能和它们进行比较。</p>
+
+                            <p><strong>constexpr</strong>：将常量表达式（如 <code>1 + 2 + 3</code>）在编译时优化，提升性能。显示声明函数或对象构造函数在编译期会成为常量表达式。支持递归（C++11）及局部变量、循环和分支（C++14）。数组定义阶段的例子：</p>
                             <pre><code class="language-cpp">
-constexpr int len_foo_constexpr() { return 5; }
-constexpr int fibonacci(const int n) {
-    return n == 1 || n == 2 ? 1 : fibonacci(n-1) + fibonacci(n-2);
+#include <iostream>
+#define LEN 10
+
+int len_foo(){
+    int i = 2;
+    return i;
+}
+constexpr int len_foo_constexpr(){
+    return 5;
 }
 
-int main() {
-    constexpr int len_2_constexpr = 1 + 2 + 3;
-    char arr_4[len_2_constexpr];         // 合法
-    char arr_6[len_foo_constexpr() + 1]; // 合法
-}</code></pre>
+constexpr int fibonacci(const int n){
+    return n == 1 || n == 2 ? 1 : fibonacci(n-1)+fibonacci(n-2);
+}
 
+int main(){
+    char arr_1[10];                      // 合法
+    char arr_2[LEN];                     // 合法
+
+    int len = 10;
+    // char arr_3[len];                  // 非法
+
+    const int len_2 = len + 1;           // const 常数而不是常量表达式
+    constexpr int len_2_constexpr = 1 + 2 + 3;
+    // char arr_4[len_2];                // 非法
+    char arr_4[len_2_constexpr];         // 合法
+
+    // char arr_5[len_foo()+5];          // 非法
+    char arr_6[len_foo_constexpr() + 1]; // 合法
+
+    std::cout << fibonacci(10) << std::endl;
+    // 1, 1, 2, 3, 5, 8, 13, 21, 34, 55
+    std::cout << fibonacci(10) << std::endl;
+    return 0;
+}</code></pre>
+                            <p><span class="text-highlight">注：现在大部分编译器其实都带有自身编译优化，很多非法行为在编译器优化的加持下会变得合法</span></p>
                             <h4>1.2.2 变量及其初始化</h4>
-                            <ul>
-                                <li><strong>if/switch 变量声明</strong>：C++17 起允许在判断语句中直接定义变量。</li>
-                                <li><strong>初始化列表</strong>：使用 <code>std::initializer_list</code>，使构造函数支持 <code>{}</code> 语法。</li>
-                                <li><strong>结构化绑定</strong>：C++17 使用 <code>auto</code> 简化元组 <code>tuple</code> 或结构体的解构。</li>
-                            </ul>
+                            <p><strong>if/switch 变量声明</strong>：C++17 起允许在判断语句中直接定义变量。</p>
+                            <p><strong>初始化列表</strong>： <code>std::initializer_list</code>，使构造函数和普通数组一样使用 <code>{}</code> 初始化列表。</p>
+                            <p><strong>结构化绑定</strong>：C++17 使用 <code>auto</code> 简化元组 <code>tuple</code> 或结构体的解构，打破 <code>std::tie</code> 对元组 <code>tuple</code> 对象数量、类型的要求。</p>
 
                             <h4>1.2.3 类型推导</h4>
-                            <p><strong>auto</strong>：C++14 起可用于 lambda 参数，C++20 扩展至普通函数。注意不能推导数组类型。</p>
-                            <p><strong>decltype</strong>：用于推导表达式类型。</p>
+                            <p><strong>auto</strong>：C++14 起可用于 lambda 参数，C++20 扩展至普通函数：</p>
                             <pre><code class="language-cpp">
-decltype(x + y) z; // z 的类型与 x+y 结果一致
-if (std::is_same&lt;decltype(x), int&gt;::value) // 判断类型</code></pre>
-                            <p><strong>尾返回类型推导</strong>：</p>
-                            <pre><code class="language-cpp">
-// C++11
-template&lt;typename T, typename U&gt;
-auto add(T x, U y) -> decltype(x + y);</code></pre>
+auto add14 = [](auto x, auto y) -> int {
+    return x+y;
+}
 
-                            <h4>1.2.4 控制流</h4>
-                            <p><strong>if constexpr</strong>：在编译阶段完成分支判断。</p>
+int add20(auto x, auto y){
+    return x+y;
+}</code></pre>
+                            <p><span class="text-highlight">注：还不能推导数组类型，如 <code>auto auto_arr2[10] = {arr};</code>。</span></p>
+                            <p><strong>decltype</strong>：用于推导表达式类型,为解决 auto 关键字只能对变量进行类型推导的缺陷，用法与 typeof 类似：</p>
                             <pre><code class="language-cpp">
-template&lt;typename T&gt;
-auto print_type_info(const T& t) {
-    if constexpr (std::is_integral&lt;T&gt;::value) {
+decltype(表达式)
+decltype(x + y) z; // 计算某个表达式的类型
+if (std::is_same&lt;decltype(x), int&gt;::value) // 判断变量是否为同一类型</code></pre>
+                            <p><strong>尾返回类型推导</strong>：为推导返回值类型，C++11 引入尾返回值类型：</p>
+                            <pre><code class="language-cpp">
+template&lt;typename T, typename U&gt;
+auto add(T x, U y) -> decltype(x + y){
+    return x + y;
+}</code></pre>
+                            <p>C++14 起可直接使用 <code>auto</code> 作为返回值类型，编译器会自动推导：</p>
+                            <pre><code class="language-cpp">
+template&lt;typename T, typename U&gt;
+auto add(T x, U y){
+    return x + y;
+}</code></pre>
+                            <h4>1.2.4 控制流</h4>
+                            <p><strong>if constexpr</strong>：在代码编译阶段完成分支判断，提高程序效率。</p>
+                            <pre><code class="language-cpp">
+#include <iostream>
+
+template<typename T>
+auto print_type_info(const T& t){
+    if constexpr (std::is_integral<T>::value){
         return t + 1;
     } else {
         return t + 0.001;
     }
+}
+int main(){
+    std::cout << print_type_info(5) << std::endl;
+    std::cout << print_type_info(3.14) << std::endl;
+}</code></pre>
+                            <p>在编译时，实际的代码表现为：</p>
+                            <pre><code class="language-cpp">
+int print_type_info(const int& t){
+    return t + 1;
+}
+double print_type_info(const double& t){
+    return t + 0.001;
+}
+int main(){
+    std::cout << print_type_info(5) << std::endl;
+    std::cout << print_type_info(3.14) << std::endl;
 }</code></pre>
                             <p><strong>区间 for 迭代</strong>：C++11 引入简洁的范围遍历。</p>
                             <pre><code class="language-cpp">for (auto element : vec) std::cout << element << std::endl;</code></pre>
@@ -155,25 +250,90 @@ auto print_type_info(const T& t) {
                             <p>现代 C++ 倾向于将计算移至编译期，大幅优化运行性能。</p>
 
                             <h4>1.2.6 面向对象</h4>
-                            <ul>
-                                <li><strong>委托构造</strong>：同一个类中构造函数相互调用。</li>
-                                <li><strong>继承构造</strong>：使用 <code>using Base::Base</code> 引入基类构造函数。</li>
-                                <li><strong>显式虚函数重载</strong>：使用 <code>override</code> 确保正确重载，<code>final</code> 防止类被继承或虚函数被进一步重载。</li>
-                                <li><strong>强类型枚举</strong>：<code>enum class</code> 实现了类型安全，不隐式转换为整数。</li>
-                            </ul>
+                            <p><strong>委托构造</strong>：同一个类中一个构造函数调用另一个构造函数，从而简化代码：</p>
+                            <pre><code class="language-cpp">
+class Base {
+public:
+    int value1;
+    int value2;
+    Base() {
+        value1 = 1;
+    }
+    Base(int value) : Base() { // 委托 Base() 构造函数
+        value2 = value;
+    }
+};</code></pre>
+                            <p><strong>继承构造</strong>：传统 C++ 中，继承的构造函数需要一一传递参数，导致效率低下。C++11 利用关键字 using 引入继承构造函数的概念：</p>
+                            <pre><code class="language-cpp">
+class Base {
+public:
+    int value1;
+    int value2;
+    Base() {
+        value1 = 1;
+    }
+    Base(int value) : Base() { // 委托 Base() 构造函数
+        value2 = value;
+    }
+};
+class Subclass : public Base {
+public:
+    using Base::Base; // 继承构造
+};</code></pre>
+                            <p><strong>显式虚函数重载</strong>：传统 C++ 中，容易发生意外重载虚函数：</p>
+                            <pre><code class="language-cpp">
+struct Base {
+    virtual void foo();
+};
+struct SubClass: Base {
+    void foo();          // 恰好与虚函数重名
+};</code></pre>
+                            <p>当基类的虚函数被删除后，子类拥有旧的函数就不再重载该虚函数并变成了一个普通的类方法。</p>
+                            <p>C++11 引入了 <code>override</code> 和 <code>final</code> 关键字，确保虚函数的正确重载和防止进一步重载。<code>override</code> 显式告知编译器进行重载，编译器检查基函数是否存在函数签名（函数名、参数类型、返回值类型、对象中可见性等）一致的虚函数，否则无法通过编译：</p>
+                            <pre><code class="language-cpp">
+struct Base {
+    virtual void foo(int);
+};
+struct SubClass: Base {
+    virtual void foo(int) override; // 合法
+    virtual void foo(float) override; // 非法, 父类没有此虚函数
+};</code></pre>
+                            <p><code>final</code> 用于防止类被继承或虚函数被进一步重载：</p>
+                            <pre><code class="language-cpp">
+struct Base {
+    virtual void foo() final;
+};
+struct SubClass1 final: Base {
+}; // 合法
+
+struct SubClass2 : SubClass1 {
+}; // 非法, SubClass1 已 final
+
+struct SubClass3: Base {
+    void foo(); // 非法, foo 已 final
+};</code></pre>
+                            <p><strong>显式/禁止使用默认构造</strong>
                             <pre><code class="language-cpp">
 class Magic {
-public:
-    Magic() = default; // 使用默认构造
-    Magic& operator=(const Magic&) = delete; // 禁用赋值
+    public:
+    Magic() = default; // 显式声明使用编译器生成的构造
+    Magic& operator=(const Magic&) = delete; // 显式声明拒绝编译器生成构造
+    Magic(int magic_number);
+}</code></pre>
+                            <p><strong>强类型枚举</strong>：在传统 C++ 中，枚举类型并不安全，可能会被视作整数，导致两种完全不同的枚举类型可以直接比较，甚至同一个命名空间中的不同枚举类型的枚举值名字不能重名。</p>
+                            <p>C++11 引入了枚举类（enumeration class）进行声明：</p>
+                            <pre><code class="language-cpp">
+enum class new_enum : unsigned int {
+    value1,
+    value2,
+    value3 = 100,
+    value4 = 100
 };
-
-enum class NewEnum : unsigned int {
-    value1, value2
-};</code></pre>
-
+</code></pre>
+                            <p>实现了类型安全，不能被隐式地转换为整数，也不能与整数进行比较，不能对不同的枚举类型进行比较。</p>
+                            <p>需要获得枚举值的值时，需要显示的类型转换，也可以通过重载 << 算符进行输出。</p>
                             <h3>2 内存管理</h3>
-                            <p>（此处内容待补充）</p>
+                            <p>To do</p>
 
                         </div>
 
