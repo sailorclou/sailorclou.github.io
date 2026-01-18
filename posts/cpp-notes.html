@@ -25,8 +25,8 @@
         blockquote { border-left: 3px solid #37352f; padding-left: 1em; margin: 1em 0; color: #666; }
         ul, ol { margin-left: 1.5em; margin-bottom: 1em; }
         .page-title { font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem; }
-        h3 { margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
-        h4 { margin-top: 1.5rem; color: #2c3e50; }
+        h2 { margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+        h3 { margin-top: 1.5rem; color: #2c3e50; }
         /* code { background: rgba(135, 131, 120, 0.15); padding: 0.2em 0.4em; border-radius: 3px; font-size: 85%; } */
     </style>
 </head>
@@ -51,7 +51,7 @@
             <div class="layout">
                 <aside class="sidebar" id="toc-sidebar" aria-label="文章目录">
                     <div class="sidebar-content">
-                        <h3 class="sidebar-title" style="border:none;">目录</h3>
+                        <h2 class="sidebar-title" style="border:none;">目录</h2>
                         <nav id="toc" aria-label="Table of contents"></nav>
                     </div>
                 </aside>
@@ -67,8 +67,8 @@
                         </header>
                         
                         <div class="page-body">
-                            <h3>1.1 准备知识</h3>
-                            <h4>1.1.1 被弃用的特性</h4>
+                            <h2>1 准备知识</h2>
+                            <h3>1.1 被弃用的特性</h3>
                             <p>从 C++11 开始，被弃用/更改的主要特性：</p>
                             <ul>
                                 <li>不允许将字符串常量赋值给一个 <code>char *</code>，初始化应使用 <code>const char *</code> 或 <code>auto</code>。</li>
@@ -79,7 +79,7 @@
                                 <li>C 语言风格的类型转换（即在变量前加 <code>(convert_type)</code> ）被弃用，应使用 <code>static_cast</code>、<code>reinterpret_cast</code>、<code>const_cast</code>。</li>
                             </ul>
 
-                            <h4>1.1.2 与 C 的兼容性</h4>
+                            <h3>1.2 与 C 的兼容性</h3>
                             <p>编写 C++ 时应避免 <code>void*</code>。必须使用 C 时，使用 <code>extern "C"</code>，  ，并将 C 语言与 C++ 代码分离编译，再统一链接：</p>
                             <pre><code class="language-cpp">
 // foo.h
@@ -132,10 +132,10 @@ all:
 clean:
 	rm -rf *.o $(TARGET)</code></pre>
                             <p><span class="text-highlight">注：Makefile 中的缩进是制表符而不是空格符</span></p>
-                            <h3>1.2 语言可用性的强化</h3>
+                            <h2>2 语言可用性的强化</h2>
                             <p>语言可用性发生在运行之前，涉及编写代码或编译器编译时的行为。</p>
 
-                            <h4>1.2.1 常量</h4>
+                            <h3>2.1 常量</h3>
                             <p><strong>nullptr</strong>：取代 <code>NULL</code>，区分空指针和 <code>0</code>。C++ 不允许 <code>void *</code> 隐式转换到其他类型。
                                 <ul>
                                     <li>若把 <code>NULL</code> 定义为 <code>((void*)0)</code>， <code>char *ch = NULL;</code> 会编译错；
@@ -181,12 +181,12 @@ int main(){
     return 0;
 }</code></pre>
                             <p><span class="text-highlight">注：现在大部分编译器其实都带有自身编译优化，很多非法行为在编译器优化的加持下会变得合法</span></p>
-                            <h4>1.2.2 变量及其初始化</h4>
+                            <h3>2.2 变量及其初始化</h3>
                             <p><strong>if/switch 变量声明</strong>：C++17 起允许在判断语句中直接定义变量。</p>
                             <p><strong>初始化列表</strong>： <code>std::initializer_list</code>，使构造函数和普通数组一样使用 <code>{}</code> 初始化列表。</p>
                             <p><strong>结构化绑定</strong>：C++17 使用 <code>auto</code> 简化元组 <code>tuple</code> 或结构体的解构，打破 <code>std::tie</code> 对元组 <code>tuple</code> 对象数量、类型的要求。</p>
 
-                            <h4>1.2.3 类型推导</h4>
+                            <h3>2.3 类型推导</h3>
                             <p><strong>auto</strong>：C++14 起可用于 lambda 参数，C++20 扩展至普通函数：</p>
                             <pre><code class="language-cpp">
 auto add14 = [](auto x, auto y) -> int {
@@ -214,7 +214,7 @@ template&lt;typename T, typename U&gt;
 auto add(T x, U y){
     return x + y;
 }</code></pre>
-                            <h4>1.2.4 控制流</h4>
+                            <h3>2.4 控制流</h3>
                             <p><strong>if constexpr</strong>：在代码编译阶段完成分支判断，提高程序效率。</p>
                             <pre><code class="language-cpp">
 #include <iostream>
@@ -246,10 +246,10 @@ int main(){
                             <p><strong>区间 for 迭代</strong>：C++11 引入简洁的范围遍历。</p>
                             <pre><code class="language-cpp">for (auto element : vec) std::cout << element << std::endl;</code></pre>
 
-                            <h4>1.2.5 模板</h4>
+                            <h3>2.5 模板</h3>
                             <p>现代 C++ 倾向于将计算移至编译期，大幅优化运行性能。</p>
 
-                            <h4>1.2.6 面向对象</h4>
+                            <h3>2.6 面向对象</h3>
                             <p><strong>委托构造</strong>：同一个类中一个构造函数调用另一个构造函数，从而简化代码：</p>
                             <pre><code class="language-cpp">
 class Base {
@@ -332,9 +332,157 @@ enum class new_enum : unsigned int {
 </code></pre>
                             <p>实现了类型安全，不能被隐式地转换为整数，也不能与整数进行比较，不能对不同的枚举类型进行比较。</p>
                             <p>需要获得枚举值的值时，需要显示的类型转换，也可以通过重载 << 算符进行输出。</p>
-                            <h3>2 内存管理</h3>
-                            <p>To do</p>
+                            <h2>5 智能指针与内存管理</h2>
+                            <h3>5.1 RAII 与引用计数</h3>
+                            <p>引用计数是为了防止内存泄露（内存标记为占用/引用计数不为零，但外部找不到这块内存）而产生的。其基本思想是，对于动态分配的对象，每增加一个引用，增加一次该对象的引用计数，删除一个引用则减一。当引用计数减为零时，自动删除指向的堆内存。</p>
+                            <p>在传统 C++ 中，使用 `new` 和 `delete`，需要去“记得”手动释放资源，但很有可能忘记而导致泄露。所以通常在构造函数中申请空间，在析构函数中（或离开作用域时）释放空间，即 RAII 资源获取即初始化技术。</p>
+                            <p>C++11 引入了智能指针的概念，需要使用引用计数。这些智能指针需要包含头文件 <code>&lt;memory&gt;</code> ，包括<code>std::shared_ptr</code>、<code>std::unique_ptr</code>、<code>std::weak_ptr</code>。</p>
+                            <p><span class="text-highlight">注：引用计数 ≠ 垃圾回收，它只是使得能够尽快回收不再使用的对象。</span></p>
 
+                            <h3>5.2 std::shared_ptr</h3>
+                            <p>记录多少个 <code>shared_ptr</code> 共同指向一个对象，从而免去显示调用 delete ，当引用计数减为零时自动删除对象。</p>
+                            <p>使用 <strong>std::make_shared</strong> 可免去显式使用 <code>new</code>，它使用传入的参数分配对象，并返回这个对象类型的 <code>std::shared_ptr</code> 指针：</p>
+                            <pre><code class="language-cpp">
+auto pointer = std::make_shared&lt;int&gt;(10);
+foo(pointer);
+std::cout << *pointer << std::endl;
+// 离开作用域时自动析构</code></pre>
+                            <p>指针可通过 <code>get()</code> 获取原始指针，<code>reset()</code> 释放引用，<code>use_count()</code> 查看计数。</p>
+                            <pre><code class="language-cpp">
+auto pointer = std::make_shared&lt;int&gt;(10);
+auto pointer2 = pointer; // 引用计数+1
+auto pointer3 = pointer; // 引用计数+1
+
+int *p = pointer.get();  // 不会增加引用计数
+
+std::cout << "pointer.use_count() = " << pointer.use_count() << std::endl;   // 3
+std::cout << "pointer2.use_count() = " << pointer2.use_count() << std::endl; // 3
+std::cout << "pointer3.use_count() = " << pointer3.use_count() << std::endl; // 3
+
+pointer2.reset();
+
+std::cout << "reset pointer2:" << std::endl;
+std::cout << "pointer.use_count() = " << pointer.use_count() << std::endl;   // 2
+std::cout << "pointer2.use_count() = "
+          << pointer2.use_count() << std::endl;           // pointer2 已 reset; 0
+std::cout << "pointer3.use_count() = " << pointer3.use_count() << std::endl; // 2
+</code></pre>
+                            <h3>5.3 std::unique_ptr</h3>
+                            <p>独占的智能指针，禁止其他指针与其共享同一个对象，从而保证代码的安全（C++14 引入）：</p>
+                            <pre><code class="language-cpp">
+std::unique_ptr&lt;int&gt; pointer = std::make_unique&lt;int&gt;(10);
+// std::unique_ptr&lt;int&gt; pointer2 = pointer; // 非法，不能复制</code></pre>
+                            <p>可以使用 std::move 将指针转移给其他的 unique_ptr：</p>
+                            <pre><code class="language-cpp">
+std::unique_ptr&lt;int&gt; pointer3 = std::move(pointer); // 合法，所有权转移</code></pre>
+
+                            <h3>5.4 std::weak_ptr</h3>
+                            <p>解决 <code>std::shared_ptr</code> 循环引用的问题。如下例中 A 和 B 互相引用导致计数永不为零：</p>
+                            <pre><code class="language-cpp">
+struct A;
+struct B;
+
+struct A {
+    std::shared_ptr&lt;B&gt; pointer;
+    ~A() {
+        std::cout << "A 被销毁" << std::endl;
+    }
+};
+struct B {
+    std::shared_ptr&lt;A&gt; pointer;
+    ~B() {
+        std::cout << "B 被销毁" << std::endl;
+    }
+};
+int main() {
+    auto a = std::make_shared&lt;A&gt;();
+    auto b = std::make_shared&lt;B&gt;();
+    a->pointer = b;
+    b->pointer = a;
+}</code></pre>
+                            <p>a、b 内部的 pointer 同时又引用了 a,b，导致 a,b 的引用计数均变为了 2，而离开作用域时，a,b 智能指针被析构，却只能造成这块区域的引用计数减一，这样就导致了 a,b 对象指向的内存区域引用计数不为零，而外部已经没有办法找到这块区域了，也就造成了内存泄露：</p>               
+                            <image src="./images/image.png" alt="shared_ptr 循环引用示意图" style="max-width:100%; margin:1rem 0;" />
+                            <p>使用 <strong>std::weak_ptr</strong> 不增加引用计数，可以打破循环：</p>
+                            <image src="./images/image1.png" alt="weak_ptr 解决循环引用示意图" style="max-width:100%; margin:1rem 0;" />
+                            <p>最后一步只剩下 B，而 B 并没有任何智能指针引用它，因此这块内存资源也会被释放。</p>
+                            <p><code>weak_ptr</code> 没有 <code>*</code> 和 <code>-></code> 运算符，所以不能够对资源进行操作，它可以用于：
+                                <li>检查 <code>std::shared_ptr</code> 是否存在：使用 <code>expired()</code> 方法，在资源未被释放时，返回 false，否则返回 true；
+                                <li>获取 对象的 <code>shared_ptr</code>指针：使用 <code>lock()</code> 方法，如果资源未被被释放，返回对象的<code>shared_ptr</code>，否则返回 <code>nullptr</code>。</li>
+                            </p>
+
+                            <h2>6 正则表达式</h2>
+                            <p>正则表达式为一种字符串的匹配模式，主要实现：
+                                <li>1. 查找：检查一个串是否包含某种形式的子串；</li>
+                                <li>2. 替换：将匹配的子串替换；</li>
+                                <li>3. 提取：从某个串中取出符合条件的子串。</li>
+                                在后台服务开发时，用于对 URL 资源链接的判断。</p>
+                            <h3>6.1 字符类型</h3>
+                            <p><strong>普通字符</strong></p>
+                            <p>包括所有大写和小写字母、所有数字、所有标点符号和一些其他符号。</p>
+
+                            <p><strong>特殊字符</strong></p>
+                            <p>正则表达式的核心匹配语法</p>
+                            <ul>
+                                <li>开始 / 结束：<code>( , )</code>，<code>$</code></li>
+                                <li>匹配字符：<code>[</code> 中括号表达式，<code>.</code> 除换行符 <code>\n</code> 的任何单字符，<code>\</code> 转义，<code>{</code> 限定符</li>
+                                <li>其他：<code>|</code> 表示两项之间的选择</li>
+                            </ul>
+
+                            <p><strong>限定字符</strong></p>
+                            <p>用来指定正则表达式的一个给定的组件必须要出现多少次才能满足匹配。</p>
+
+                            <p><strong><code>{n, m}</code>：</strong>最少匹配 <code>n</code> 次且最多匹配 <code>m</code> 次。<code>{0,1}</code>  ↔ <code>?</code></p>
+                            <ul>
+                                <li><code>{n,}</code>：至少匹配 <code>n</code> 次。<code>{0,}</code>  ↔ <code>*</code>，<code>{1,}</code>  ↔ <code>+</code>。</li>
+                                <li><code>{n}</code>：匹配确定的 <code>n</code> 次。</li>
+                            </ul>
+
+                            <h3>6.2 <code>std::regex</code> 及其相关</h3>
+                            <p>传统 C++ 中正则表达式没有纳入标准库，一般使用 `boost` 的正则表达式库。而 C++11 正式将正则表达式的处理纳入标准库 <code>&lt;regex&gt;</code> 。
+                            <p><strong><code>std::regex_match</code></strong> ：匹配字符串和正则表达式</p>
+                                <li>使用一：传入一个 <code>std::string</code> 和一个  <code>std::regex</code> ，产生 <code>std::smatch</code> 对象，返回 <code>true</code> 或 <code>false</code> ：
+                            <pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;regex&gt;
+
+int main() {
+    std::string fnames[] = {"foo.txt", "bar.txt", "test", "a0.txt", "AAA.txt"};
+    // 在 C++ 中 \ 会被作为字符串内的转义符，
+    // 为使 \. 作为正则表达式传递进去生效，需要对 \ 进行二次转义，从而有 \\.
+    std::regex txt_regex("[a-z]+\\.txt");
+    for (const auto &fname: fnames)
+        std::cout << fname << ": " << std::regex_match(fname, txt_regex) << std::endl;
+}</code></pre>
+                        <p>输出：<pre><code class="language-bash">
+foo.txt: 1
+bar.txt: 1
+test: 0
+a0.txt: 0
+AAA.txt: 0
+</code></pre></p></li>
+                            
+                            <li>使用二：依次传入 <code>std::string</code> 、<code>std::smatch</code> 、 <code>std::regex</code> ，其中 <code>std::smatch</code> 为子串迭代器类型，可以对匹配的结果进行获取：
+                            <pre><code class="language-cpp">
+std::regex base_regex("([a-z]+)\\.txt");
+std::smatch base_match;
+for(const auto &fname: fnames) {
+    if (std::regex_match(fname, base_match, base_regex)) {
+        // std::smatch 的第一个元素匹配整个字符串
+        // std::smatch 的第二个元素匹配了第一个括号表达式
+        if (base_match.size() == 2) {
+            std::string base = base_match[1].str();
+            std::cout << "sub-match[0]: " << base_match[0].str() << std::endl;
+            std::cout << fname << " sub-match[1]: " << base << std::endl;
+        }
+    }
+}</code></pre>
+                        <p>输出：<pre><code class="language-bash">
+sub-match[0]: foo.txt
+foo.txt sub-match[1]: foo
+sub-match[0]: bar.txt
+bar.txt sub-match[1]: bar
+</code></pre></p></li>
                         </div>
 
                         <div class="post-footer">

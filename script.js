@@ -695,7 +695,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 excerpt: 'A comprehensive guide for beginners who want to start their journey in web development.',
                 url: 'posts/getting-started-with-web-development.html',
                 date: 'December 15, 2024',
-                category: 'Technology'
+                category: 'Tech'
             },
             'design-principles-for-modern-web': {
                 title: 'Design Principles for Modern Web',
