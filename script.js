@@ -1115,8 +1115,26 @@ document.addEventListener('DOMContentLoaded', function() {
         function setActiveTOC(id) {
             const prev = tocContainer.querySelector('a.toc-link.active');
             if (prev) prev.classList.remove('active');
+            
             const anchor = tocContainer.querySelector(`a.toc-link[data-target="${id}"]`);
-            if (anchor) anchor.classList.add('active');
+            if (anchor) {
+                anchor.classList.add('active');
+                
+                // --- 新增逻辑：确保当前高亮项在侧边栏可见区域内 ---
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar) {
+                    const anchorRect = anchor.getBoundingClientRect();
+                    const sidebarRect = sidebar.getBoundingClientRect();
+                    
+                    // 如果高亮项在侧边栏上方或下方不可见，则滚动侧边栏
+                    if (anchorRect.top < sidebarRect.top || anchorRect.bottom > sidebarRect.bottom) {
+                        anchor.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'nearest' // 将元素滚动到最近的边缘
+                        });
+                    }
+                }
+            }
         }
 
         // initial highlight based on current scroll

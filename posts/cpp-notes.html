@@ -28,6 +28,9 @@
         h2 { margin-top: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
         h3 { margin-top: 1.5rem; color: #2c3e50; }
         /* code { background: rgba(135, 131, 120, 0.15); padding: 0.2em 0.4em; border-radius: 3px; font-size: 85%; } */
+        table { border-collapse: collapse; width: 100%; margin: 20px 0; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; }
     </style>
 </head>
 <body>
@@ -332,6 +335,270 @@ enum class new_enum : unsigned int {
 </code></pre>
                             <p>实现了类型安全，不能被隐式地转换为整数，也不能与整数进行比较，不能对不同的枚举类型进行比较。</p>
                             <p>需要获得枚举值的值时，需要显示的类型转换，也可以通过重载 << 算符进行输出。</p>
+
+                            <h2>3 语言运行期的强化</h2>
+
+                            <h3>3.1 LAMBDA 表达式</h3>
+                            <p>提供匿名函数特性，不需要费力命名。</p>
+                            <p>Lambda 表达式的基本语法：</p>
+                            <pre><code class="language-cpp">[捕获列表](参数列表) mutable(可选) 异常属性 -> 返回类型 {
+    // 函数体
+}</code></pre>
+                            <p>捕获列表，可以理解为参数的一种类型，Lambda 表达式内部函数体在默认情况下是不能够使用函数体外部的变量的， 这时候捕获列表起到传递外部数据的作用。</p>
+                            
+                            <p><strong>捕获列表的类型：</strong></p>
+                            <ol>
+                                <li>空捕获：<code>[]</code></li>
+                                <li>值捕获：与参数传值类似，值捕获的前提是变量可以拷贝，不同之处则在于，被捕获的变量在 Lambda 表达式被创建时拷贝， 而非调用时才拷贝：
+                                    <pre><code class="language-cpp">void lambda_value_capture() {
+    int value = 1;
+    auto copy_value = [value] { // 或 [=value]
+        return value;
+    };
+    value = 100;
+    auto stored_value = copy_value();
+    std::cout << "stored_value = " << stored_value << std::endl;
+    // 这时, stored_value == 1, 而 value == 100.
+    // 因为 copy_value 在创建时就保存了一份 value 的拷贝
+}</code></pre>
+                                </li>
+                                <li>引用捕获：与引用传参类似，引用捕获保存的是引用，值会随引用的变量变化而发生变化。
+                                    <pre><code class="language-cpp">void lambda_reference_capture(){
+    int value = 1;
+    auto copy_value = [&value] {
+        return value;
+    };
+    value = 100;
+    auto stored_value = copy_value();
+    std::cout << "stored_value = " << stored_value << std::endl;
+    // 这时, stored_value == 100, value == 100.
+    // 因为 copy_value 保存的是引用
+}</code></pre>
+                                </li>
+                                <li>捕获多个变量：<code>[name1, name2, ...]</code></li>
+                                <li>表达式捕获：以上捕获都是在外层作用域声明的变量，因此只能捕获左值，不能捕获右值。C++ 14允许用任意的表达式初始化捕获成员，即允许了右值的捕获，被声明的变量会根据表达式自行判断类型：
+                                    <pre><code class="language-cpp">#include &lt;iostream&gt;
+#include &lt;memory&gt;  // std::make_unique
+#include &lt;utility&gt; // std::move
+
+void lambda_expression_capture(){
+    auto important = std::make_unique&lt;int&gt;(1);
+    auto add = [v1 = 1, v2 = std::move(important)](int x, int y) -> int {
+        return x+y+v1+(*v2);
+    };
+    std::cout << add(3,4) << std::endl;
+}</code></pre>
+                                </li>
+                            </ol>
+                            <p><strong>泛型 Lambda：</strong>从 C++14 开始，参数可以使用 auto 关键字</p>
+                            <pre><code class="language-cpp">auto add = [](auto x, auto y) {
+    return x+y;
+};
+
+add(1, 2);
+add(1.1, 2.2);</code></pre>
+
+                            <h3>3.2 函数对象包装器</h3>
+                            <p><strong>std::function</strong></p>
+                            <p>function objects 的语法类似于 functions。<code>std::function</code> 实例可以存储、复制和激活任何 Callable target (eg., functions, lambda expressions, bind expressions, or other function objects, pointers to member function s and pointers to data members) 。声明如下：</p>
+                            <pre><code class="language-cpp">template&lt; class R, class... Args &gt;
+class function&lt;R(Args...)&gt;</code></pre>
+                            <ul>
+                                <li>R: result (eg., return) type</li>
+                                <li>Args: argument type</li>
+                            </ul>
+                            <p><strong>成员函数</strong>：</p>
+                            <p>operator() 使用给定的参数用于激活 callable</p>
+                            <p>Lambda 表达式的本质是一个和函数对象类型相似的类类型（称为闭包类型）的对象（称为闭包对象）。当捕获列表为空时，闭包对象还能转换为函数指针：</p>
+                            <pre><code class="language-cpp">#include &lt;iostream&gt;
+
+using foo = void(int); 
+void functional(foo f){ 
+    f(1); 
+}
+
+int main(){
+    auto f = [](int value) {
+        std::cout << value << std::endl;
+    };
+    functional(f); // 隐式转换为 foo* 类型的函数指针值
+    f(1); 
+    return 0;
+}</code></pre>
+                            <p><strong>std::bind</strong>：绑定函数调用的参数。可以将部分调用参数提前绑定到函数身上成为一个新的对象，等参数齐全后再完成调用。</p>
+                            <pre><code class="language-cpp">int foo(int a, int b, int c){ ; }
+int main(){
+    auto bindFoo = std::bind(foo, std::placeholders::_1, 1, 2);
+    bindFoo(1); // 只需要提供第一个参数即可
+}</code></pre>
+                            <p><strong>示例</strong>：</p>
+                            <pre><code class="language-cpp">
+#include &lt;functional&gt;
+#include &lt;iostream&gt;
+
+struct Foo {
+   Foo(int num) : num_(num) {}
+   void print_add(int i) const { std::cout << num_+i << '\n'; }
+   int num_;
+};
+ 
+void print_num(int i) {
+   std::cout << i << '\n';
+}
+
+struct PrintNum {
+   void operator()(int i) const {
+      std::cout << i << '\n';
+   }
+};
+
+int main() {
+   std::function&lt;void(int)&gt; f_display = print_num;
+   f_display(-9);
+
+   std::function&lt;void()&gt; f_display_42 = []() { print_num(42); };
+   f_display_42();
+
+   std::function&lt;void()&gt; f_display_31337 = std::bind(print_num, 31337);
+   f_display_31337();
+
+   std::function&lt;void(const Foo&, int)&gt; f_add_display = &Foo::print_add;
+   const Foo foo(314159);
+   f_add_display(foo, 1);
+
+   std::function&lt;int(Foo const&)&gt; f_num = &Foo::num_;
+   std::cout << "num_: " << f_num(foo) << '\n';
+
+   using std::placeholders::_1;
+   std::function&lt;void(int)&gt; f_add_display2= std::bind( &Foo::print_add, foo, _1 );
+   f_add_display2(2);
+
+   std::function&lt;void(int)&gt; f_add_display3= std::bind( &Foo::print_add, &foo, _1 );
+   f_add_display3(3);
+
+   std::function&lt;void(int)&gt; f_display_obj = PrintNum();
+   f_display_obj(18);
+}</code></pre>
+                            <h3>3.3 右值引用</h3>
+                            <p>解决 <code>std::vector</code>、<code>std::string</code> 等容器的额外开销，为函数对象容器 std::function 提供了基础。。核心区别在于：<strong>左值可以取地址，右值不能取地址。</strong></p>
+                            <p><strong>引用规则：</strong>非常量左值引用不能绑定到临时对象（右值）。</p>
+                            <blockquote>字符串字面量 <code>"hello"</code> 的类型是 <code>const char[6]</code>，它本身存储的是内存地址。<code>std::move()</code> 之后，原参数本身仍是左值，但被强制转换为右值引用，允许资源转移。</blockquote>
+                            <p><strong>万能引用：</strong>使用模板参数 <code>T&&</code>，允许既绑定到左值，也绑定到右值。</p>
+                            <pre><code class="language-cpp">template &lt;typename T&gt;
+void func(T&& x) {
+}
+
+int main() {
+	int a = 20;
+	func(a);
+	func(20);
+}</code></pre>
+                            <p><strong>移动构造与拷贝构造：</strong>移动构造参数为 <code>&&</code>，用于接管临时对象的资源，避免深拷贝开销。</p>
+                            <p><strong>解决返回值传递问题：</strong></p>
+                            <image src="./images/image3.png" alt="编译器优化示意图" style="max-width:100%; margin:1rem 0;" />
+                            
+                            <p><strong>完美转发</strong></p>
+                            <p>一个声明的右值引用是一个左值，对参数转发（传递）造成了困难。</p>
+                            <pre><code class="language-cpp">
+void reference(int& v) {
+    std::cout << "左值" << std::endl;
+}
+void reference(int&& v) {
+    std::cout << "右值" << std::endl;
+}
+template &lt;typename T&gt;
+void pass(T&& v) {
+    std::cout << "普通传参:";
+    reference(v); // 始终调用 reference(int&)
+}
+int main() {
+    std::cout << "传递右值:" << std::endl;
+    pass(1); // 1是右值, 但输出是左值
+
+    std::cout << "传递左值:" << std::endl;
+    int l = 1;
+    pass(l); // l 是左值, 输出左值
+
+    return 0;
+}
+}</code></pre>
+                            <p>对于 pass(1) 来说，虽然传递的是右值，但由于 v 是一个引用，所以同时也是左值。 </p>
+                            <p>在传统 C++ 中，由于引用坍缩，不能对一个引用继续进行引用，但 C++ 引用的引用遵循以下规则：</p>
+                            <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+    <thead>
+        <tr style="background-color: #f2f2f2;">
+            <th style="padding: 8px;">函数形参类型</th>
+            <th style="padding: 8px;">实参参数类型</th>
+            <th style="padding: 8px;">推导后函数形参类型</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="padding: 8px;">T&amp;</td>
+            <td style="padding: 8px;">左引用</td>
+            <td style="padding: 8px;">T&amp;</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">T&amp;</td>
+            <td style="padding: 8px;">右引用</td>
+            <td style="padding: 8px;">T&amp;</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">T&amp;&amp;</td>
+            <td style="padding: 8px;">左引用</td>
+            <td style="padding: 8px;">T&amp;</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px;">T&amp;&amp;</td>
+            <td style="padding: 8px;">右引用</td>
+            <td style="padding: 8px;">T&amp;&amp;</td>
+        </tr>
+    </tbody>
+</table>
+                            <p>为能够传递引用，应使用 <code>std::forward</code> 进行参数的转发：</p>
+                            <pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;utility&gt;
+void reference(int& v) {
+    std::cout << "左值引用" << std::endl;
+}
+void reference(int&& v) {
+    std::cout << "右值引用" << std::endl;
+}
+template &lt;typename T&gt;
+void pass(T&& v) {
+    std::cout << "              普通传参: ";
+    reference(v);
+    std::cout << "       std::move 传参: ";
+    reference(std::move(v));
+    std::cout << "    std::forward 传参: ";
+    reference(std::forward<T>(v));
+    std::cout << "static_cast<T&&> 传参: ";
+    reference(static_cast<T&&>(v));
+}
+int main() {
+    std::cout << "传递右值:" << std::endl;
+    pass(1);
+
+    std::cout << "传递左值:" << std::endl;
+    int v = 1;
+    pass(v);
+
+    return 0;
+}</code></pre>
+                            <p>输出为：</p>
+                            <pre><code class="language-bash">
+                                传递右值:
+              普通传参: 左值引用
+       std::move 传参: 右值引用
+    std::forward 传参: 右值引用
+static_cast<T&&> 传参: 右值引用
+传递左值:
+              普通传参: 左值引用
+       std::move 传参: 右值引用
+    std::forward 传参: 左值引用
+static_cast<T&&> 传参: 左值引用</code></pre>
+                            <p>std::forward 通过重载接收两种类型。</p>
                             <h2>5 智能指针与内存管理</h2>
                             <h3>5.1 RAII 与引用计数</h3>
                             <p>引用计数是为了防止内存泄露（内存标记为占用/引用计数不为零，但外部找不到这块内存）而产生的。其基本思想是，对于动态分配的对象，每增加一个引用，增加一次该对象的引用计数，删除一个引用则减一。当引用计数减为零时，自动删除指向的堆内存。</p>
@@ -483,6 +750,595 @@ foo.txt sub-match[1]: foo
 sub-match[0]: bar.txt
 bar.txt sub-match[1]: bar
 </code></pre></p></li>
+
+                        <h2>7 并行与并发</h2>
+                            <h3>7.1 并行基础</h3>
+                            <p><code>std::thread</code> 用于创建一个线程实例，提供了基本的线程操作。例如使用 <code>get_id()</code> 获取线程 ID，使用 <code>join()</code> 等待一个线程结束（与该线程汇合）等。</p>
+                            <pre><code class="language-cpp">
+                                #include &lt;thread&gt;
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+
+int main() {
+    std::thread t([](){
+        std::cout << "hello world." << std::endl;
+    });
+    t.join();
+    return 0;
+}</code></pre>
+
+                            <h3>7.2 互斥量与临界区</h3>
+                            <p>C++11 引入了 <code>mutex</code> 相关的类，其中 <code>std::mutex</code> 是最基本的互斥量类。通过创建对象来创建互斥量，通过其成员函数 <code>lock()</code> 上锁，<code>unlock()</code> 解锁。但实际使用最好不调用成员函数，否则需要在每个临界区解锁。</p>
+                            <p><code>std::lock_guard</code> 是为互斥量提供的一个 RAII 机制的模板类，只需在临界区作用域开始时创建互斥量：</p>
+                            <pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;thread&gt;
+
+int v = 1;
+
+void critical_section(int change_v) {
+    static std::mutex mtx;
+    std::lock_guard<std::mutex> lock(mtx);
+
+    // 执行竞争操作
+    v = change_v;
+
+    // 离开此作用域后 mtx 会被释放
+}
+
+int main() {
+    std::thread t1(critical_section, 2), t2(critical_section, 3);
+    t1.join();
+    t2.join();
+
+    std::cout << v << std::endl;
+    return 0;
+}</code></pre>
+                            <p>由于 C++ 保证了所有栈对象在生命周期结束时会被销毁，因此无论 <code>critical_section()</code> 正常返回，还是中途抛出异常，都会引发栈回溯，自动调用了 <code>unlock()</code> 。</p>
+                            <p><span class="text-highlight">注：此时并没有捕获抛出的异常（需定义是否进行栈回溯）。</span></p>
+                            <p> <code>std::unique_lock</code> 的对象独占 <code>mutex</code> 对象，比 <code>std::lock_guard</code> 更灵活。<code>std::lock_guard</code> 不能显式的调用 <code>lock</code> 和 <code>unlock</code>， 而 <code>std::unique_lock</code> 可以在声明后的任意位置调用， 可以缩小锁的作用范围，提供更高的并发度。</p>
+
+                            <h3>7.3 期物（Future）</h3>
+                            <p><code>std::future</code> 提供了访问异步操作结果的途径。例如，线程 A 创建的线程 B 执行后返回一个结果，但此时 A 在忙，所以希望能在未来的某个时间获得线程 B 的结果。</p>
+                            <p>在 C++11 之前，通常的做法是线程 B 完成后返回一个事件，并将结果保存在全局变量中，当需要结果时，调用一个线程等待函数来获得。</p>
+                            <p><code>std::packaged_task</code> 可以封装任何可调用目标并与 <code>std::future</code> 绑定。</p>
+                            <pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;future&gt;
+#include &lt;thread&gt;
+
+int main(){
+    // 将一个返回值为7的 lambda 表达式封装到 task 中
+    // std::packaged_task 的模板参数为要封装函数的类型
+    std::packaged_task&lt;int()&gt; task([](){return 7;}); // 可以封装任何可以调用的目标，与一个 std::future 绑定
+    // 获得 task 的期物
+    std::future&lt;int&gt; result = task.get_future(); // 在一个线程中执行 task
+    std::thread(std::move(task)).detach();
+    std::cout << "waiting...";
+    result.wait(); // 在此设置屏障，阻塞到期物的完成
+    // 输出执行结果
+    std::cout << "done!" << std:: endl << "future result is "
+              << result.get() << std::endl;
+    return 0;
+}</code></pre>
+                            <h3>7.4 条件变量</h3>
+                            <p>条件变量 <code>std::condition_variable</code> 用于唤醒等待线程，避免死锁。在生产者消费者模型中：生产者使用 <code>notify_all()</code>，消费者使用 <code>wait()</code> 挂起。</p>
+                            <p><strong>生产者消费者模型：</strong></p>
+                            <p>使用条件变量 std::condition_variable cv; ，在生产者中，用于唤醒消费者；在消费者中，用于等待生产者唤醒。</p>
+<pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
+#include &lt;queue&gt;
+#include &lt;chrono&gt;
+
+
+int main() {
+    std::queue&lt;int&gt; produced_nums;
+    std::mutex mtx;
+    std::condition_variable cv;
+    bool notified = false;  // 通知信号
+
+    // 生产者
+    auto producer = [&]() {
+        for (int i = 0; ; i++) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(900)); // 模拟生产速度
+            std::unique_lock&lt;std::mutex&gt; lock(mtx);
+            std::cout << "producing " << i << std::endl;
+            produced_nums.push(i);
+            notified = true;
+            cv.notify_all(); // 此处也可以使用 notify_one
+        }
+    };
+    // 消费者
+    auto consumer = [&]() {
+        while (true) {
+            std::unique_lock<std::mutex> lock(mtx);
+            while (!notified) {  // 避免虚假唤醒
+                cv.wait(lock);
+            }
+            // 短暂取消锁，使得生产者有机会在消费者消费空前继续生产
+            lock.unlock();
+            // 消费者慢于生产者
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            lock.lock();
+            while (!produced_nums.empty()) {
+                std::cout << "consuming " << produced_nums.front() << std::endl;
+                produced_nums.pop();
+            }
+            notified = false;
+        }
+    };
+
+    // 分别在不同的线程中运行
+    std::thread p(producer);
+    std::thread cs[2];
+    for (int i = 0; i < 2; ++i) {
+        cs[i] = std::thread(consumer);
+    }
+    p.join();
+    for (int i = 0; i < 2; ++i) {
+        cs[i].join();
+    }
+    return 0;
+}</code></pre>
+
+                            <blockquote>在生产者中虽然可以使用 <code>notify_one()</code> 但实际并不建议。在多消费者的情况下消费者的实现中简单地放弃了锁的持有，更好地利用多消费者的并发。但 <code>std::mutex</code> 的排他性，无法并行消费，我们仍需要粒度更细的手段。</blockquote>
+                            
+                            <h3>7.5 原子操作与内存模型</h3>
+                            <p>可能存在的问题：两个并行的线程竞争读写；CPU 乱序执行。</p>
+                            <p><strong>原子操作</strong></p>
+                            <pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;atomic&gt;
+
+std::atomic&lt;int&gt; count = {0};
+
+int main() {
+    std::thread t1([](){
+        count.fetch_add(1);
+    });
+    std::thread t2([](){
+        count++;        // 等价于 fetch_add
+        count += 1;     // 等价于 fetch_add
+    });
+    t1.join();
+    t2.join();
+    std::cout << count << std::endl;
+    return 0;
+}</code></pre>
+                            <p>并非所有的类型都能提供原子操作，这是因为原子操作的可行性取决于具体的 CPU 架构，以及所实例化的类型结构是否能够满足该 CPU 架构对内存对齐 条件的要求，因而可以通过 <code>std::atomic<T>::is_lock_free</code> 来检查该原子类型是否需支持原子操作。</p>
+                            
+                            <p><strong>一致性模型</strong></p>
+                            <p>更改操作顺序（改变相对于全局时钟的顺序的一致性），从而加速多线程的效益。</p>
+                            <p><strong>内存顺序</strong></p>
+                            <p>线程间原子操作的顺序/依赖性</p>
+
+                            <h3>7.6 习题</h3>
+                            <p><strong>Thread-safe Queue：</strong></p>
+                            <p>线程安全队列是是“生产者-消费者”模式的核心。在并发环境下，线程安全队列用来保证线程安全，即对共享变量的互斥访问。组件：</p>
+                            <p><li><code>std::mutex</code>（互斥量）：保护数据</li><li><code>std::condition_variable</code>（条件变量）：来处理线程间的等待与唤醒 </li></p>
+                            <p>基本实现：</p>
+                            <pre><code class="language-cpp">
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
+#include &lt;queue&gt;
+
+// Thread-safe queue
+template &lt;typename T&gt;
+class TSQueue {
+private:
+    // 1. Underlying queue
+    std::queue&lt;T&gt; m_queue;
+    // 2. mutex for thread synchronization
+    std::mutex m_mutex;
+    // 3. Condition variable for signaling
+    std::condition_variable m_cond;
+
+public:
+    // Pushes an element to the queue
+    void push(T item)
+    {
+        // 1. Acquire lock
+        std::unique_lock&lt;std::mutex&gt; lock(m_mutex);
+        // 2. Add item
+        m_queue.push(item);
+        // 3. Notify one thread that is waiting
+        m_cond.notify_one();
+    }
+
+    // Pops an element off the queue
+    T pop()
+    {
+        // 1. acquire lock
+        std::unique_lock&lt;std::mutex&gt; lock(m_mutex);
+        // 2. wait until queue is not empty
+        m_cond.wait(lock,
+                    [this]() { return !m_queue.empty(); });
+        // 3.retrieve item
+        T item = m_queue.front();
+        m_queue.pop();
+        // return item
+        return item;
+    }
+};
+
+// Driver code
+int main()
+{
+    TSQueue&lt;int&gt; q;
+
+    // Push some data
+    q.push(1);
+    q.push(2);
+    q.push(3);
+
+    // Pop some data
+    std::cout << q.pop() << std::endl;
+    std::cout << q.pop() << std::endl;
+    std::cout << q.pop() << std::endl;
+
+    return 0;
+}</code></pre>
+                            <p>“生产者-消费者”模式的不同实现对比：</p>
+                            <pre><code class="language-cpp">
+#include &lt;queue&gt;
+#include &lt;memory&gt;
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
+
+template&lt;typename T&gt;
+class threadsafe_queue {
+private:
+    // 互斥量，用于保护对内部 data_queue 的访问 
+    mutable std::mutex mut; 
+    std::queue&lt;T&gt; data_queue;
+    // 条件变量，用于在队列为空时挂起消费者线程 
+    std::condition_variable data_cond;
+
+public:
+    threadsafe_queue() {}
+
+    // 生产者操作：向队列推送新数据
+    void push(T new_value) {
+        std::lock_guard&lt;std::mutex&gt; lk(mut); // 1. 自动上锁，确保线程安全 
+        data_queue.push(std::move(new_value)); // 2. 插入数据
+        data_cond.notify_one(); // 3. 唤醒一个正在等待的消费者线程 
+    }
+
+    // 消费者操作：阻塞式等待并弹出数据
+    void wait_and_pop(T& value) {
+        std::unique_lock&lt;std::mutex&gt; lk(mut); // 1. 必须使用 unique_lock，因为它可以在 wait 中解锁 
+        // 2. 检查队列是否非空。若为空则解锁并挂起；被唤醒后若仍为空则继续挂起（处理虚假唤醒） 
+        data_cond.wait(lk, [this]{ return !data_queue.empty(); }); 
+        value = std::move(data_queue.front()); // 3. 获取数据
+        data_queue.pop();
+    }
+
+    // 消费者操作：返回智能指针，有效处理异常安全性
+    std::shared_ptr&lt;T&gt; wait_and_pop() {
+        std::unique_lock&lt;std::mutex&gt; lk(mut);
+        data_cond.wait(lk, [this]{ return !data_queue.empty(); });
+        // 在弹出前构造 shared_ptr，避免在拷贝构造时抛出异常导致数据丢失
+        std::shared_ptr&lt;T&gt; res(std::make_shared&lt;T&gt;(std::move(data_queue.front())));
+        data_queue.pop();
+        return res;
+    }
+
+    // 非阻塞操作：尝试获取数据，若队列为空则立即返回
+    bool try_pop(T& value) {
+        std::lock_guard&lt;std::mutex&gt; lk(mut);
+        if(data_queue.empty())
+            return false;
+        value = std::move(data_queue.front());
+        data_queue.pop();
+        return true;
+    }
+
+    bool empty() const {
+        std::lock_guard&lt;std::mutex&gt; lk(mut);
+        return data_queue.empty();
+    }
+};</code></pre>
+                            <p>实现“Graceful Shutdown”：</p>
+                            <pre><code class="language-cpp">
+// Created by Adam Kecskes
+// https://github.com/K-Adam/SafeQueue
+
+#pragma once
+
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
+#include &lt;queue&gt;
+#include &lt;utility&gt;
+
+template&lt;class T&gt;
+class SafeQueue {
+
+	std::queue&lt;T&gt; q;
+	
+	std::mutex mtx;
+	
+	std::condition_variable cv;        // 生产者与消费者之间的通信
+	std::condition_variable sync_wait; // 消费者与finish()之间的通信，保证消费者全部完成
+	
+	bool finish_processing = false;
+	int sync_counter = 0;
+	
+	void DecreaseSyncCounter() {
+		if (--sync_counter == 0) {
+			sync_wait.notify_one();
+		}
+	}
+public:
+	typedef typename std::queue&lt;T&gt;::size_type size_type;
+	SafeQueue() {}
+	~SafeQueue() {
+		Finish();
+	}
+
+	void Produce(T&& item) {
+		std::lock_guard&lt;std::mutex&gt; lock(mtx)
+		q.push(std::move(item));
+		cv.notify_one();
+	}
+
+	size_type Size() {
+		std::lock_guard&lt;std::mutex&gt; lock(mtx);
+		return q.size();
+	}
+
+	[[nodiscard]]
+	bool Consume(T& item) {
+		std::lock_guard&lt;std::mutex&gt; lock(mtx);
+		if (q.empty()) {
+			return false;
+		}
+		item = std::move(q.front());
+		q.pop();
+		return true;
+	}
+
+	[[nodiscard]]
+	bool ConsumeSync(T& item) {
+		std::unique_lock&lt;std::mutex&gt; lock(mtx);
+		sync_counter++;
+		cv.wait(lock, [&] {
+			return !q.empty() || finish_processing;
+		});
+		if (q.empty()) {
+			DecreaseSyncCounter();
+			return false;
+		}
+		item = std::move(q.front());
+		q.pop();
+		DecreaseSyncCounter();
+		return true;
+	}
+
+	void Finish() {
+		std::unique_lock&lt;std::mutex&gt; lock(mtx);
+		finish_processing = true;
+		cv.notify_all();
+		sync_wait.wait(lock, [&]() {
+			return sync_counter == 0;
+		});
+		finish_processing = false;
+	}
+};</code></pre>
+
+                            <p><strong>线程池</strong></p>
+                            <p>维护多个工作线程，等待任务分配。</p>
+                            <image src="./images/image2.png" alt="线程池示意图" style="max-width:100%; margin:1rem 0;" />
+                            <p>编写一个简单的线程池，提供如下功能：</p>
+                            <pre><code class="language-cpp">
+ThreadPool pool(4); // 指定四个工作线程
+
+// 将任务在池中入队，并返回一个 std::future
+auto f = pool.enqueue([](int life) {
+    return meaning;
+}, 42);
+
+// 从 future 中获得执行结果
+std::cout << f.get() << std::endl;</code></pre>
+
+                            <p>实现思路：思路：在构造函数中初始化线程池中的所有线程，并让它们wait，当有任务入队时，notify一个线程；当线程池结束时，notify所有线程，并终止。</p>
+                            <pre><code class="language-cpp">
+#include &lt;queue&gt;
+#include &lt;thread&gt;
+#include &lt;functional&gt;
+
+#include &lt;mutex&gt;
+#include &lt;condition_variable&gt;
+
+class ThreadPool {
+public:
+	ThreadPool(size_t);
+	template&lt;class F, class... Args&gt;
+	auto enqueue(F&& f, Args&&... args) 
+		-> std::future&lt;typename std::result_of&lt;F(Args)::type&gt;&gt;;
+	~ThreadPool();
+private:
+	std::vector&lt;thread&gt; workers;
+	std::queue&lt;function&lt;void()&gt;&gt; tasks;
+	std::mutex q_mutex;
+	std::condition_variable cv;
+	bool stop;
+}
+
+inline ThreadPool::ThreadPool(size_t size) : stop(false) {
+	for (size_t i = 0;i &lt; size;++i) {
+		workers.emplace_bask([this]
+		                     {for(;;){std::function&lt;void()&gt; task;
+																	 {
+																		 std::unique_lock&lt;std::mutex&gt; lock(q_mutex);
+																		 this->cv.wait(lock, [this]{ return this->stop || !this->tasks.empty(); });
+																		 if (this->stop && this->tasks.empty()) return;
+																		 task = std::move(this->task.front());
+																		 this.tasks.pop;
+																	 }
+																	 task();}});
+	}
+}
+
+template&lt;class F, class... Args&gt;
+auto enqueue(F&& f, Args&&... args) 
+	-> std::future&lt;typename std::result_of&lt;F(Args)::type&gt;&gt; {
+	using return_type = typename std::result_of&lt;F(Args...)::type&gt;;
+	auto task = std::make_share&lt;std::packaged_task&lt;return_type()&gt;&gt;
+						 (std::bind(std::forward&lt;F&gt;(f), std::forward&lt;Args&gt;(args)));
+	std::future&lt;return_type&gt; res = task->get_future();
+	{
+		std::unique_lock&lt;std::mutex&gt; lock(q_mutex);
+		if (stop) throw std::runtime_error("enqueue on stopped ThreadPool");
+		tasks.emplace([task](){ (*task)(); });
+	}
+	cv.notify_one();
+	return res
+}
+
+inline ThreadPool::~ThreadPool() {
+	{
+		std::unique_lock&lt;std::mutex&gt; lock(q_mutex);
+		stop = true;		
+	}
+	cv.notify_all();
+	for (std::thread &worker: workers) {
+		worker.join();
+	}
+}</code></pre>
+                            <ol>
+                                <li>
+                                    <strong>任务的“包装”与结果返回：std::packaged_task</strong>
+                                    <p>这是线程池能够将执行结果传回给调用者的关键。</p>
+                                    <ul>
+                                    <li><strong>核心逻辑：</strong><code>std::packaged_task</code> 将一个函数（或可调用对象）包装起来，并允许你通过 <code>get_future()</code> 获得一个 <code>std::future</code> 对象。</li>
+                                    <li><strong>为什么要用 shared_ptr？：</strong><code>std::packaged_task</code> 本身是不可拷贝的（只可移动）。但在线程池中，我们需要将任务放入 <code>std::function&lt;void()&gt;</code> 队列中，而 <code>std::function</code> 要求其存储的对象必须是可拷贝的。使用 <code>shared_ptr</code> 包装后，拷贝的是指针副本，从而绕过了这个限制，并确保任务在执行前不会被销毁。</li>
+                                    <li><strong>std::bind 的角色：</strong>它将“带参数的函数”转化为“不带参数的函数对象”，使其匹配 <code>packaged_task&lt;return_type()&gt;</code> 的签名。</li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <strong>通用任务队列的实现：tasks.emplace</strong>
+                                    <p>线程池的工作线程必须能够处理任何类型的任务，因此需要一个通用的接口。</p>
+                                    <ul>
+                                    <li><strong>类型擦除：</strong>任务队列的类型通常是 <code>std::queue&lt;std::function&lt;void()&gt;&gt;</code>。这意味着无论原始函数返回什么，它都被包装在一个无返回值、无参数的 Lambda 闭包中。</li>
+                                    <li><strong>执行机制：</strong>当工作线程执行 <code>(*task)()</code> 时，实际上触发了内部包装的 <code>packaged_task</code>。这一步会自动完成两件事：执行原始函数、将返回值（或异常）填充到 future 中。</li>
+                                    <li><strong>异常传递：</strong>如果任务函数抛出异常，<code>packaged_task</code> 会捕获它并存储。当调用者在另一个线程执行 <code>future.get()</code> 时，该异常会被重新抛出，实现了跨线程的异常安全传递。</li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <strong>条件变量的高效等待：cv.wait(lock, predicate)</strong>
+                                    <p>这是线程池节省 CPU 资源的“呼吸”机制。</p>
+                                    <ul>
+                                    <li><strong>避免忙等：</strong>工作线程不是在循环中不断检查队列，而是通过 <code>wait</code> 进入休眠状态，直到有新任务或线程池停止。</li>
+                                    <li><strong>谓词（Predicate）的作用：</strong><code>[this]{ return this-&gt;stop || !this-&gt;tasks.empty(); }</code> 这个 Lambda 表达式是安全开关。它能有效处理虚假唤醒（Spurious Wakeups）。</li>
+                                    <li><strong>原子性保证：</strong>在 <code>wait</code> 内部，它会原子性地释放互斥锁并进入休眠；当被唤醒时，它会重新获取锁并检查谓词。只有谓词为 true 时，线程才会继续向下执行。</li>
+                                    </ul>
+                                </li>
+
+                                <li>
+                                    <strong>Lambda 中的 this 捕获与生命周期</strong>
+                                    <p>理解 Lambda 闭包如何与类成员交互。</p>
+                                    <ul>
+                                    <li><strong>成员访问权：</strong>Lambda 默认无法直接访问类的成员变量。通过捕获 <code>[this]</code>，Lambda 获得了当前类实例的指针，从而可以实时读取 stop 状态和 tasks 队列。</li>
+                                    <li><strong>实时状态 vs 副本：</strong>不能捕获变量的副本（如 <code>[=]</code>），因为谓词必须检查成员变量的当前实时状态，而不是捕获 Lambda 时刻的快照。</li>
+                                    <li><strong>安全性保证：</strong>在这种设计中，析构函数会先设置 <code>stop = true</code> 并通知（notify）所有线程，然后等待线程结束（join）。这保证了在 <code>ThreadPool</code> 对象销毁前，所有引用了 this 的工作线程已经安全退出，避免了野指针风险。</li>
+                                    </ul>
+                                </li>
+                                </ol>
+                            <p><strong>互斥锁实现</strong></p>
+                            <p>利用 <code>std::atomic&lt;bool&gt;</code> 的 <strong>TAS (Test-And-Set)</strong> 逻辑构建互斥锁。</p>
+                            <p>在并发编程的底层，使用 <code>std::atomic<bool></code> 实现的锁通常被称为 自旋锁（Spinlock）。与 <code>std::mutex</code> 会让线程进入休眠（上下文切换）不同，自旋锁会让线程在原地循环“忙等”，直到获取锁（explicitly released）。由于不需要操作系统进行进程调度或上下文切换，当线程阻塞时间很短的情况下，自旋锁效率更高</p>
+                            <pre><code class="language-cpp">
+#include &lt;atomic&gt;
+#include &lt;thread&gt;
+
+class AtomicSpinlock {
+private:
+    // false 表示未上锁，true 表示已上锁
+    std::atomic&lt;bool&gt; flag{false};
+
+public:
+    void lock() {
+        // 尝试将 flag 从 false 设置为 true
+        // 如果 exchange 返回 true，说明之前已经有人持锁，我们需要继续循环（自旋）
+        // memory_order_acquire 确保锁之后的指令不会重排到锁之前
+        while (flag.exchange(true, std::memory_order_acquire)) {
+            // 自旋期间可以加入 cpu_relax 指令以优化性能（平台相关）
+        }
+    }
+
+    bool try_lock() {
+        // 仅尝试一次，成功返回 true，失败返回 false
+        return !flag.exchange(true, std::memory_order_acquire);
+    }
+
+    void unlock() {
+        // 将 flag 设为 false，释放锁
+        // memory_order_release 确保锁之前的指令不会重排到锁之后
+        flag.store(false, std::memory_order_release);
+    }
+};
+}</code></pre>              
+
+                        <ul>
+                            <li>为什么是 exchange？</li>
+                            <ul>
+                                <li>在多线程环境下，简单的 <code>if(flag == false) flag = true;</code> 是不安全的，因为这两步之间可能被其他线程插足。</li>
+                                <li><code>flag.exchange(true)</code> 是一个<strong>原子操作</strong>：它同时完成“读取旧值”和“设置新值”。</li>
+                                <li><strong>如果返回 false</strong>：说明你成功把 <code>false</code> 改成了 <code>true</code>，即抢锁成功。</li>
+                                <li><strong>如果返回 true</strong>：说明锁本就是 <code>true</code>，你只是把 <code>true</code> 又改成了 <code>true</code>，即抢锁失败，需要继续循环。</li>
+                            </ul>
+
+                            <li>内存序（Memory Ordering）的重要性</li>
+                            <ul>
+                                <li><code>std::memory_order_acquire</code> (获取)：确保当前线程在成功拿到锁后，能看到其他线程在释放锁之前所做的所有写入操作。</li>
+                                <li><code>std::memory_order_release</code> (释放)：确保当前线程在释放锁之前的所有写入操作，对接下来要获取锁的线程可见。</li>
+                            </ul>
+
+                            <li>自旋锁与互斥锁（std::mutex）的区别</li>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>特性</th>
+                                        <th>自旋锁 (Atomic)</th>
+                                        <th>互斥锁 (std::mutex)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>等待方式</strong></td>
+                                        <td>忙等（消耗 CPU）</td>
+                                        <td>休眠（不占 CPU）</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>上下文切换</strong></td>
+                                        <td>无（响应极快）</td>
+                                        <td>有（开销较大）</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>适用场景</strong></td>
+                                        <td>临界区极短（纳秒级）</td>
+                                        <td>临界区较长或涉及 I/O</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <li>注意事项：虚假竞争与 CPU 消耗</li>
+                            <div class="note">
+                                <p>在生产环境中要谨慎：</p>
+                                <ul>
+                                    <li><strong>单核 CPU</strong>：在单核机器上使用自旋锁完全是浪费时间，因为自旋线程不挂起，占着 CPU 导致持锁线程无法运行。</li>
+                                    <li><strong>长时间持锁</strong>：如果持锁线程被操作系统切出（Preemption），所有自旋线程都会白白浪费 CPU 周期。</li>
+                                </ul>
+                            </div>
+                            <blockquote>在 C++ 中，如果追求极致性能，通常推荐使用 <code>std::atomic_flag</code>，它是 C++ 标准中唯一保证无锁（lock-free）的类型，其 <code>test_and_set()</code> 方法比 <code>atomic<bool></code> 的 <code>exchange()</code> 更符合硬件的 TAS 指令。</blockquote>
                         </div>
 
                         <div class="post-footer">
